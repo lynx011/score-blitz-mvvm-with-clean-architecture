@@ -29,7 +29,7 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
 
     val selectedLeague = MutableLiveData<Leagues>()
 
-    val subFixtures = MutableLiveData<List<FixtureResult?>?>()
+    val fixturesMap = mutableMapOf<Int, List<FixtureResult?>?>()
 
     fun getLeagues() = viewModelScope.launch(Dispatchers.IO) {
         useCase(met = "Leagues", apiKey = "09df73968af6d0c4b72631f2c84024483093115b0a1043c047b2fec418772218").collect{
@@ -45,6 +45,9 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
                         loading = false,
                         leagues = it.data ?: emptyList()
                     )
+//                    it.data?.map {id ->
+//                        id.league_key?.let {key -> getFixtures(key) }
+//                    }
                 }
                 is ApiResponse.Error -> {
                     _leagues.value = leagues.value.copy(
@@ -57,25 +60,30 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
     }
 
     fun getFixtures(leagueId: Int) = viewModelScope.launch(Dispatchers.IO) {
-        useCase(met = "Fixtures", leagueId = leagueId, from = "2022-01-01", to = "2024-01-01", apiKey = "09df73968af6d0c4b72631f2c84024483093115b0a1043c047b2fec418772218").collect{
-            when(it){
-                is ApiResponse.Loading -> {
-                    _fixtures.value = fixtures.value.copy(
-                        loading = true,
-                        fixtures = it.data?: emptyList()
-                    )
-                }
-                is ApiResponse.Success -> {
-                    _fixtures.value = fixtures.value.copy(
-                        loading = false,
-                        fixtures = it.data ?: emptyList()
-                    )
-                }
-                is ApiResponse.Error -> {
-                    _fixtures.value = fixtures.value.copy(
-                        loading = false,
-                        error = it.message ?: "An Expected Error Occurred!"
-                    )
+        if (!fixturesMap.containsKey(leagueId)){
+            useCase(met = "Fixtures", leagueId = leagueId, from = "2022-01-01", to = "2024-01-01", apiKey = "09df73968af6d0c4b72631f2c84024483093115b0a1043c047b2fec418772218").collect{
+                when(it){
+                    is ApiResponse.Loading -> {
+                        _fixtures.value = fixtures.value.copy(
+                            loading = true,
+                            fixtures = it.data?: emptyList()
+                        )
+                    }
+                    is ApiResponse.Success -> {
+                        val fixturesData = it.data ?: emptyList()
+                        _fixtures.value = fixtures.value.copy(
+                            loading = false,
+                            fixtures = fixturesData
+                        )
+                        // Store fixtures data in the map for the league ID
+                        fixturesMap[leagueId] = fixturesData
+                    }
+                    is ApiResponse.Error -> {
+                        _fixtures.value = fixtures.value.copy(
+                            loading = false,
+                            error = it.message ?: "An Expected Error Occurred!"
+                        )
+                    }
                 }
             }
         }

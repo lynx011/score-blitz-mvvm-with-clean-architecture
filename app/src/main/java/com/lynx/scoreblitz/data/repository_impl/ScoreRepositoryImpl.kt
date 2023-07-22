@@ -34,7 +34,7 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
     ): Flow<ApiResponse<List<FixtureResult?>?>> = flow {
         try {
             emit(ApiResponse.Loading())
-            val fixtures = apiService.getFixtures(met, leagueId, from, to, apiKey).result.map {
+            val fixtures = apiService.getFixtures(met, leagueId, from, to, apiKey).result?.map {
                 it.toFixtureResult()
             }
             emit(ApiResponse.Success(data = fixtures))

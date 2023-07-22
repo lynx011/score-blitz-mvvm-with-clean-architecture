@@ -37,31 +37,24 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewModel()
         setupHeaderLeagues()
         observeLeagues()
-        observeFixtures()
-        swipeToRefresh()
-    }
-
-    private fun setupViewModel(){
-        leaguesAdapter.viewModel = viewModel
+//        observeFixtures()
+//        swipeToRefresh()
     }
 
     private fun setupHeaderLeagues() {
-            binding.leagueRec.layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            leaguesAdapter = LeaguesAdapter {league ->
-                viewModel.selectedLeague.value = league
-                league.league_key?.let { viewModel.getFixtures(it) }
-            }
-            binding.leagueRec.adapter = leaguesAdapter
+        binding.leagueRec.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        leaguesAdapter = LeaguesAdapter(viewModel) {league ->
+            viewModel.selectedLeague.value = league
+//            league.league_key?.let { viewModel.getFixtures(it) }
+        }
+        binding.leagueRec.adapter = leaguesAdapter
 
-//            binding.fixtureRec.layoutManager = LinearLayoutManager(requireContext())
-//            fixturesAdapter = FixturesAdapter { fixture ->
-//
-//            }
-//            binding.fixtureRec.adapter = fixturesAdapter
+//        binding.fixtureRec.layoutManager = LinearLayoutManager(requireContext())
+//        fixturesAdapter = FixturesAdapter()
+//        binding.fixtureRec.adapter = fixturesAdapter
     }
 
     private fun observeLeagues() {
@@ -75,7 +68,10 @@ class DashboardFragment : Fragment() {
 
                     it.leagues.isNotEmpty() -> {
 //                        binding.progressBar.visibility = View.INVISIBLE
-                        leaguesAdapter.differ.submitList(it.leagues as ArrayList<Leagues>)
+                        leaguesAdapter.differ.submitList(it.leagues.take(6) as ArrayList<Leagues>)
+                        it.leagues.map { key ->
+                            key.league_key?.let { id -> viewModel.getFixtures(id) }
+                        }
                     }
 
                     it.error.isNotEmpty() -> {
@@ -89,34 +85,34 @@ class DashboardFragment : Fragment() {
 
     }
 
-    private fun observeFixtures() {
-        CoroutineScope(Dispatchers.Main).launch {
-            viewModel.fixtures.collectLatest {
-                when {
-                    it.loading -> {
+//    private fun observeFixtures() {
+//        CoroutineScope(Dispatchers.Main).launch {
+//            viewModel.fixtures.collectLatest {
+//                when {
+//                    it.loading -> {
 //                        binding.progressBar.visibility = View.VISIBLE
-                    }
+ //                   }
 
-                    it.fixtures?.isNotEmpty() == true -> {
+//                    !it.fixtures.isNullOrEmpty() -> {
 //                        binding.progressBar.visibility = View.INVISIBLE
 //                        fixturesAdapter.differ.submitList(it.fixtures.take(50))
-                        viewModel.subFixtures.value = it.fixtures
-                    }
+//                        Toast.makeText(requireContext(),it.fixtures.toString(),Toast.LENGTH_SHORT).show()
+//                    }
 
-                    it.error.isNotEmpty() -> {
+//                    it.error.isNotEmpty() -> {
 //                        binding.progressBar.visibility = View.VISIBLE
-                        Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-            }
-        }
-    }
+//                        Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT)
+//                            .show()
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-    private fun swipeToRefresh() {
-        binding.refreshLayout.setOnRefreshListener {
-            observeLeagues()
-            binding.refreshLayout.isRefreshing = false
-        }
-    }
+//    private fun swipeToRefresh() {
+//        binding.refreshLayout.setOnRefreshListener {
+//            observeLeagues()
+//            binding.refreshLayout.isRefreshing = false
+//        }
+//    }
 }
