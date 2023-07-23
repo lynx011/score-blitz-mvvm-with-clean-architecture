@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.lynx.scoreblitz.databinding.FragmentDashboardBinding
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.Leagues
@@ -17,6 +19,7 @@ import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -59,7 +62,7 @@ class DashboardFragment : Fragment() {
 
     private fun observeLeagues() {
         viewModel.getLeagues()
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             viewModel.leagues.collectLatest {
                 when {
                     it.loading -> {
@@ -68,9 +71,11 @@ class DashboardFragment : Fragment() {
 
                     it.leagues.isNotEmpty() -> {
 //                        binding.progressBar.visibility = View.INVISIBLE
-                        leaguesAdapter.differ.submitList(it.leagues.take(6) as ArrayList<Leagues>)
+                        leaguesAdapter.differ.submitList(it.leagues as ArrayList<Leagues>)
                         it.leagues.map { key ->
-                            key.league_key?.let { id -> viewModel.getFixtures(id) }
+                            key.league_key?.let { id ->
+                                viewModel.getFixtures(id)
+                            }
                         }
                     }
 
@@ -90,17 +95,14 @@ class DashboardFragment : Fragment() {
 //            viewModel.fixtures.collectLatest {
 //                when {
 //                    it.loading -> {
-//                        binding.progressBar.visibility = View.VISIBLE
- //                   }
-
+//                    }
+//
 //                    !it.fixtures.isNullOrEmpty() -> {
-//                        binding.progressBar.visibility = View.INVISIBLE
-//                        fixturesAdapter.differ.submitList(it.fixtures.take(50))
+////                        fixturesAdapter.differ.submitList(it.fixtures.take(6))
 //                        Toast.makeText(requireContext(),it.fixtures.toString(),Toast.LENGTH_SHORT).show()
 //                    }
-
+//
 //                    it.error.isNotEmpty() -> {
-//                        binding.progressBar.visibility = View.VISIBLE
 //                        Toast.makeText(requireContext(), it.error, Toast.LENGTH_SHORT)
 //                            .show()
 //                    }
@@ -115,4 +117,9 @@ class DashboardFragment : Fragment() {
 //            binding.refreshLayout.isRefreshing = false
 //        }
 //    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        lifecycleScope.cancel()
+    }
 }

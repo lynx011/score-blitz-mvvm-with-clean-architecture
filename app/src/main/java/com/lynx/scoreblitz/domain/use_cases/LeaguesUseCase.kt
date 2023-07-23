@@ -6,6 +6,7 @@ import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.ApiResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.take
 import javax.inject.Inject
 
 class LeaguesUseCase @Inject constructor(private val repository: ScoreRepository) {
