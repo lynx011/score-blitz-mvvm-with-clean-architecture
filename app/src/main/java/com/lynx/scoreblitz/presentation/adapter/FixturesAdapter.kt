@@ -29,10 +29,12 @@ class FixturesAdapter(private val clickOnFixture: ((FixtureResult) -> Unit)? = n
         val fixtures = differ.currentList[position]
         fixtures?.let(holder::bind)
 
-        val scores = fixtures.event_ft_result.toString()
-        val splitScores = scores.split(" - ")
-        holder.binding.homeResult.text = splitScores[0]
-        holder.binding.awayResult.text = splitScores[1]
+        fixtures?.let {
+            val scores = fixtures.event_ft_result.toString()
+            val splitScores = scores.split(" - ")
+            holder.binding.homeResult.text = if (splitScores.size >= 2) splitScores[0] else "N/A"
+            holder.binding.awayResult.text = if (splitScores.size >=2) splitScores[1] else "N/A"
+        }
         holder.itemView.setOnClickListener {
             clickOnFixture?.invoke(fixtures)
         }

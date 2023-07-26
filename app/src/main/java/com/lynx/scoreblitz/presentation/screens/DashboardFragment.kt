@@ -47,6 +47,7 @@ class DashboardFragment : Fragment() {
         observeLeagues()
         observeFixtures()
         swipeToRefresh()
+
     }
 
     private fun setupHeaderLeagues() {
@@ -60,7 +61,7 @@ class DashboardFragment : Fragment() {
         binding.fixtureRec.layoutManager = LinearLayoutManager(requireContext())
         fixturesAdapter = FixturesAdapter {result ->
             viewModel.selectedFixture.value = result
-//            result.league_key?.let { viewModel.getFixtures(it) }
+            result.league_key?.let { viewModel.getFixtures(it) }
             navigate(R.id.nav_fixture_details)
 
         }
@@ -87,6 +88,9 @@ class DashboardFragment : Fragment() {
                             leagueShimmer.visibility = View.GONE
                             leagueRec.visibility = View.VISIBLE
                         }
+//                        if (viewModel.fixtures.value.fixtures == null){
+//                            it.leagues[0].league_key?.let { it1 -> viewModel.getFixtures(it1) }
+//                        }
                         viewModel.key.observe(viewLifecycleOwner){ position ->
                             it.leagues[position?:0].league_key?.let { key -> viewModel.getFixtures(key) }
                         }
@@ -127,6 +131,7 @@ class DashboardFragment : Fragment() {
                             fixtureRec.visibility = View.VISIBLE
                         }
                         fixturesAdapter.differ.submitList(it.fixtures)
+                        viewModel.fixtureList.value = it.fixtures
                     }
 
                     it.error.isNotEmpty() -> {

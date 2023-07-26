@@ -7,6 +7,7 @@ import com.lynx.scoreblitz.domain.model.FirstTeamH2H
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.H2HModel
 import com.lynx.scoreblitz.domain.model.SecondTeamH2H
+import com.lynx.scoreblitz.domain.model.Statistic
 import com.lynx.scoreblitz.domain.use_cases.LeaguesUseCase
 import com.lynx.scoreblitz.presentation.states.FixturesStates
 import com.lynx.scoreblitz.presentation.states.H2HStates
@@ -38,6 +39,8 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
 
     val selectedLeaguePosition = MutableLiveData<Int?>()
 
+    val fixtureList = MutableLiveData<List<FixtureResult?>?>()
+
     val selectedFixture = MutableLiveData<FixtureResult?>()
 
     val key = MutableLiveData<Int?>()
@@ -47,6 +50,8 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
     val h2hFirstTeamResult = MutableLiveData<List<FirstTeamH2H?>?>()
 
     val h2hSecondTeamResult = MutableLiveData<List<SecondTeamH2H?>?>()
+
+    val stats = MutableLiveData<List<Statistic?>?>()
 
     private val fixturesMap = MutableStateFlow(mutableMapOf<Int,List<FixtureResult?>?>())
 
