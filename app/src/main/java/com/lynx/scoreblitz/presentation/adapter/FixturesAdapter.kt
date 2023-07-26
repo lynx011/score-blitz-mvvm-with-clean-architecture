@@ -5,20 +5,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.lynx.scoreblitz.databinding.FixtureItemsBinding
+import com.lynx.scoreblitz.databinding.PlayedMatchItemBinding
 import com.lynx.scoreblitz.domain.model.FixtureResult
 
-class FixturesAdapter() : RecyclerView.Adapter<FixturesAdapter.FixtureViewHolder>() {
+class FixturesAdapter(private val clickOnFixture: ((FixtureResult) -> Unit)? = null) : RecyclerView.Adapter<FixturesAdapter.FixtureViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): FixturesAdapter.FixtureViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = FixtureItemsBinding.inflate(inflater,parent,false)
+        val binding = PlayedMatchItemBinding.inflate(inflater,parent,false)
         return FixtureViewHolder(binding)
     }
 
-    class FixtureViewHolder(private val binding: FixtureItemsBinding) : RecyclerView.ViewHolder(binding.root){
+    class FixtureViewHolder(val binding: PlayedMatchItemBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(result: FixtureResult){
             binding.fixture = result
             binding.executePendingBindings()
@@ -28,6 +28,14 @@ class FixturesAdapter() : RecyclerView.Adapter<FixturesAdapter.FixtureViewHolder
     override fun onBindViewHolder(holder: FixturesAdapter.FixtureViewHolder, position: Int) {
         val fixtures = differ.currentList[position]
         fixtures?.let(holder::bind)
+
+        val scores = fixtures.event_ft_result.toString()
+        val splitScores = scores.split(" - ")
+        holder.binding.homeResult.text = splitScores[0]
+        holder.binding.awayResult.text = splitScores[1]
+        holder.itemView.setOnClickListener {
+            clickOnFixture?.invoke(fixtures)
+        }
     }
 
     override fun getItemCount(): Int {

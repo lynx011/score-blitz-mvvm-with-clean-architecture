@@ -1,6 +1,8 @@
 package com.lynx.scoreblitz.data.repository_impl
+
 import com.lynx.scoreblitz.data.data_sources.api_service.ScoreApiService
 import com.lynx.scoreblitz.domain.model.FixtureResult
+import com.lynx.scoreblitz.domain.model.H2HResponse
 import com.lynx.scoreblitz.domain.model.Leagues
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.ApiResponse
@@ -10,20 +12,30 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiService) : ScoreRepository {
-    override suspend fun getLeagues(met: String, apiKey: String): Flow<ApiResponse<List<Leagues>>> = flow {
-        try {
-            emit(ApiResponse.Loading())
-            val leagues = apiService.getLeagues(met, apiKey).result.map {
-                it.toLeagues()
+class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiService) :
+    ScoreRepository {
+    override suspend fun getLeagues(met: String, apiKey: String): Flow<ApiResponse<List<Leagues>>> =
+        flow {
+            try {
+                emit(ApiResponse.Loading())
+                val leagues = apiService.getLeagues(met, apiKey).result.map {
+                    it.toLeagues()
+                }
+                emit(leagues.let { ApiResponse.Success(it) })
+            } catch (e: HttpException) {
+                emit(
+                    ApiResponse.Error(
+                        e.localizedMessage ?: "HttpException-An Expected Error Occurred!"
+                    )
+                )
+            } catch (e: IOException) {
+                emit(
+                    ApiResponse.Error(
+                        e.localizedMessage ?: "IOException-An Expected Error Occurred!"
+                    )
+                )
             }
-            emit(ApiResponse.Success(data = leagues))
-        }catch (e: HttpException){
-            emit(ApiResponse.Error(e.localizedMessage?:"HttpException-An Expected Error Occurred!"))
-        }catch (e: IOException){
-            emit(ApiResponse.Error(e.localizedMessage?:"IOException-An Expected Error Occurred!"))
         }
-    }
 
     override suspend fun getFixtures(
         met: String,
@@ -34,14 +46,45 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
     ): Flow<ApiResponse<List<FixtureResult?>?>> = flow {
         try {
             emit(ApiResponse.Loading())
-            val fixtures = apiService.getFixtures(met, leagueId, from, to, apiKey).result?.map {
-                it.toFixtureResult()
-            }
+            val fixtures =
+                apiService.getFixtures(met, leagueId, from, to, apiKey).result.map {
+                    it.toFixtureResult()
+                }
             emit(ApiResponse.Success(data = fixtures))
-        }catch (e: HttpException){
-            emit(ApiResponse.Error(message = e.localizedMessage?:"HttpException-An Expected Error Occurred!"))
-        }catch (e: IOException){
-            emit(ApiResponse.Error(message = e.localizedMessage?:"IOException-An Expected Error Occurred!"))
+        } catch (e: HttpException) {
+            emit(
+                ApiResponse.Error(
+                    message = e.localizedMessage ?: "HttpException-An Expected Error Occurred!"
+                )
+            )
+        } catch (e: IOException) {
+            emit(
+                ApiResponse.Error(
+                    message = e.localizedMessage ?: "IOException-An Expected Error Occurred!"
+                )
+            )
+        }
+    }
+
+    override suspend fun getH2H(
+        met: String,
+        firstTeamId: Int,
+        secondTeamId: Int,
+        apiKey: String
+    ): Flow<ApiResponse<H2HResponse?>> = flow {
+        try {
+            emit(ApiResponse.Loading())
+            val h2hResult =
+                apiService.getH2H(met, firstTeamId, secondTeamId, apiKey).result.toH2HList()
+            emit(ApiResponse.Success(h2hResult))
+        } catch (e: HttpException) {
+            emit(
+                ApiResponse.Error(
+                    e.localizedMessage ?: "HttpException-An Expected Error Occurred!"
+                )
+            )
+        } catch (e: IOException) {
+            emit(ApiResponse.Error(e.localizedMessage ?: "IOException-An Expected Error Occurred!"))
         }
     }
 }

@@ -1,34 +1,38 @@
 package com.lynx.scoreblitz.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.lynx.scoreblitz.R
 import com.lynx.scoreblitz.databinding.LeagueItemsBinding
 import com.lynx.scoreblitz.domain.model.Leagues
 import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
-class LeaguesAdapter(
-    private val viewModel: ScoreViewModel,
+class LeaguesAdapter(private val viewModel: ScoreViewModel,
     private val clickOnLeague: ((Leagues) -> Unit)? = null
 ) : RecyclerView.Adapter<LeaguesAdapter.LeaguesViewHolder>() {
+    private val selectedPosition = 0
 
     class LeaguesViewHolder(
-        val binding: LeagueItemsBinding, private val viewModel: ScoreViewModel
+        val binding: LeagueItemsBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-
-        fun bind(leagues: Leagues) {
+        fun bind(leagues: Leagues, selected: Boolean) {
             binding.league = leagues
             binding.executePendingBindings()
+
+            if (selected){
+                binding.leagueCard.isEnabled = false
+                binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(binding.leagueCard.context,
+                    R.color.amber))
+            }else{
+                binding.leagueCard.isEnabled = true
+                binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(binding.leagueCard.context,
+                    R.color.dark_grey))
+            }
 
         }
     }
@@ -36,7 +40,7 @@ class LeaguesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaguesViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = LeagueItemsBinding.inflate(inflater, parent, false)
-        return LeaguesViewHolder(binding, viewModel)
+        return LeaguesViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -45,14 +49,27 @@ class LeaguesAdapter(
 
     override fun onBindViewHolder(holder: LeaguesViewHolder, position: Int) {
         val leagues = differ.currentList[position]
-        leagues?.let(holder::bind)
+
+        viewModel.isSelectedLeague.value = viewModel.selectedLeaguePosition.value == position
+        leagues?.let {
+            holder.bind(it,viewModel.isSelectedLeague.value!!)
+        }
+
+//        if (selectedPosition == position){
+//            holder.binding.leagueCard.isEnabled = false
+//            holder.binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(holder.binding.leagueCard.context,
+//                R.color.amber))
+//        }else{
+//            holder.binding.leagueCard.isEnabled = true
+//            holder.binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(holder.binding.leagueCard.context,
+//                R.color.dark_grey))
+//        }
 
         holder.binding.apply {
-
-            leagues.league_key?.let { viewModel.updateFixtures(it, fixtureRec) }
-
             holder.itemView.setOnClickListener {
-                fixtureRec.visibility = if (fixtureRec.isShown) View.GONE else View.VISIBLE
+                viewModel.selectedLeaguePosition.value = position
+                viewModel.key.value = position
+                notifyDataSetChanged()
                 clickOnLeague?.invoke(leagues)
             }
         }

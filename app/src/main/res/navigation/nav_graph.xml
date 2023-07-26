@@ -3,11 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/dashboardFragment">
+    app:startDestination="@id/nav_dashboard">
 
     <fragment
-        android:id="@+id/dashboardFragment"
+        android:id="@+id/nav_dashboard"
         android:name="com.lynx.scoreblitz.presentation.screens.DashboardFragment"
         android:label="fragment_dashboard"
         tools:layout="@layout/fragment_dashboard" />
+    <fragment
+        android:id="@+id/nav_fixture_details"
+        android:name="com.lynx.scoreblitz.presentation.screens.fixture_detail.FixtureDetailsFragment"
+        android:label="fragment_fixture_details"
+        tools:layout="@layout/fragment_fixture_details" />
+    <fragment
+        android:id="@+id/h2HFragment"
+        android:name="com.lynx.scoreblitz.presentation.screens.fixture_detail.H2HFragment"
+        android:label="fragment_h2_h"
+        tools:layout="@layout/fragment_h2_h" />
+    <fragment
+        android:id="@+id/statsFragment"
+        android:name="com.lynx.scoreblitz.presentation.screens.fixture_detail.StatsFragment"
+        android:label="fragment_stats"
+        tools:layout="@layout/fragment_stats" />
 </navigation>

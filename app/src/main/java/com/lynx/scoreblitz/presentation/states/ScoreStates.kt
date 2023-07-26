@@ -1,6 +1,7 @@
 package com.lynx.scoreblitz.presentation.states
 
 import com.lynx.scoreblitz.domain.model.FixtureResult
+import com.lynx.scoreblitz.domain.model.H2HResponse
 import com.lynx.scoreblitz.domain.model.Leagues
 
 data class LeaguesStates(
@@ -12,5 +13,11 @@ data class LeaguesStates(
 data class FixturesStates(
     val loading: Boolean = false,
     val fixtures: List<FixtureResult?>? = emptyList(),
+    val error: String = ""
+)
+
+data class H2HStates(
+    val loading: Boolean = false,
+    val h2h: H2HResponse? = null,
     val error: String = ""
 )
