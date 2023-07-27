@@ -107,7 +107,7 @@ data class CardDTO(
     val info_time: String?,
     val time: String?
 ){
-    fun toCard() : Card{
+    fun toCard() : Card {
         return Card(
             away_fault = away_fault,
             away_player_id = away_player_id,

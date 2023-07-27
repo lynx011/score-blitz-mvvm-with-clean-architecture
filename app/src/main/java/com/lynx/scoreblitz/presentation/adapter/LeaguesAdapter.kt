@@ -14,7 +14,6 @@ import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
 class LeaguesAdapter(private val viewModel: ScoreViewModel,
     private val clickOnLeague: ((Leagues) -> Unit)? = null
 ) : RecyclerView.Adapter<LeaguesAdapter.LeaguesViewHolder>() {
-    private val selectedPosition = 0
 
     class LeaguesViewHolder(
         val binding: LeagueItemsBinding
@@ -54,16 +53,6 @@ class LeaguesAdapter(private val viewModel: ScoreViewModel,
         leagues?.let {
             holder.bind(it,viewModel.isSelectedLeague.value!!)
         }
-
-//        if (selectedPosition == position){
-//            holder.binding.leagueCard.isEnabled = false
-//            holder.binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(holder.binding.leagueCard.context,
-//                R.color.amber))
-//        }else{
-//            holder.binding.leagueCard.isEnabled = true
-//            holder.binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(holder.binding.leagueCard.context,
-//                R.color.dark_grey))
-//        }
 
         holder.binding.apply {
             holder.itemView.setOnClickListener {

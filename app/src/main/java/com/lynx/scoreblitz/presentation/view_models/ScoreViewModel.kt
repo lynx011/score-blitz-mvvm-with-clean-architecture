@@ -1,12 +1,12 @@
 package com.lynx.scoreblitz.presentation.view_models
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lynx.scoreblitz.domain.model.FirstTeamH2H
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.H2HModel
+import com.lynx.scoreblitz.domain.model.Leagues
 import com.lynx.scoreblitz.domain.model.SecondTeamH2H
 import com.lynx.scoreblitz.domain.model.Statistic
 import com.lynx.scoreblitz.domain.use_cases.LeaguesUseCase
@@ -19,6 +19,7 @@ import com.lynx.scoreblitz.utils.ScoreActions
 import com.lynx.scoreblitz.utils.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -46,6 +47,12 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
 
     val endDate = MutableLiveData<String?>()
 
+    val leagueLiveData = MutableLiveData<List<Leagues?>?>()
+
+    val selectedLeagueKey = MutableLiveData<Int?>()
+
+    val fixtureLiveData = MutableLiveData<List<FixtureResult?>?>()
+
     val isSelectedLeague = MutableLiveData(false)
 
     val selectedLeaguePosition = MutableLiveData<Int?>()
@@ -66,7 +73,7 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
 
     private val fixturesMap = MutableStateFlow(mutableMapOf<Int,List<FixtureResult?>?>())
 
-    private val _actions = MutableSharedFlow<ScoreActions>()
+    private var _actions = MutableSharedFlow<ScoreActions>()
     val actions : SharedFlow<ScoreActions> = _actions
 
 
@@ -154,6 +161,7 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun onClear(){
         _leagues.value = LeaguesStates(false, emptyList(),"")
         _fixtures.value = FixturesStates(false, emptyList(), "")
@@ -162,6 +170,8 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
         selectedFixture.value = null
         key.value = null
         h2hResult.value = null
+        stats.value = null
+        _actions.resetReplayCache()
     }
 
 }
