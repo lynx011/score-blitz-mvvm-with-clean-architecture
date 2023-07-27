@@ -39,7 +39,7 @@ class H2HFragment : Fragment() {
     private fun setupRec() {
         binding.h2hRec.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        h2hAdapter = H2hAdapter { _ ->
+        h2hAdapter = H2hAdapter(viewModel) { _ ->
         }
         binding.h2hRec.adapter = h2hAdapter
     }

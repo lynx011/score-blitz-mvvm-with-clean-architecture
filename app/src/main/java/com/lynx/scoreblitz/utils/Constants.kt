@@ -6,3 +6,5 @@ object Constants {
 
     const val BASE_URL = "https://apiv2.allsportsapi.com/"
 }
+
+private var currentDate : String? = null

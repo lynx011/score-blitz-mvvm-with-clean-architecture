@@ -1,5 +1,6 @@
 package com.lynx.scoreblitz.presentation.view_models
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,9 +15,13 @@ import com.lynx.scoreblitz.presentation.states.H2HStates
 import com.lynx.scoreblitz.presentation.states.LeaguesStates
 import com.lynx.scoreblitz.utils.ApiResponse
 import com.lynx.scoreblitz.utils.Constants
+import com.lynx.scoreblitz.utils.ScoreActions
+import com.lynx.scoreblitz.utils.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -34,6 +39,12 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
 
     private val _h2h = MutableStateFlow(H2HStates())
     val h2h : StateFlow<H2HStates> = _h2h
+
+    val pickedDate = MutableLiveData<Pair<String?,String?>?>()
+
+    val startDate = MutableLiveData<String?>()
+
+    val endDate = MutableLiveData<String?>()
 
     val isSelectedLeague = MutableLiveData(false)
 
@@ -54,6 +65,14 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
     val stats = MutableLiveData<List<Statistic?>?>()
 
     private val fixturesMap = MutableStateFlow(mutableMapOf<Int,List<FixtureResult?>?>())
+
+    private val _actions = MutableSharedFlow<ScoreActions>()
+    val actions : SharedFlow<ScoreActions> = _actions
+
+
+    fun onDateRangePicker(){
+        _actions.emit(viewModelScope){ ScoreActions.OnPickDate }
+    }
 
     fun getLeagues() = scope.launch(Dispatchers.IO) {
         useCase(met = "Leagues", apiKey = Constants.API_KEY).collectLatest{
@@ -80,9 +99,9 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
         }
     }
 
-    fun getFixtures(leagueId: Int) = viewModelScope.launch(Dispatchers.IO) {
+    fun getFixtures(leagueId: Int, from: String, to: String) = viewModelScope.launch(Dispatchers.IO) {
 //        if (!fixturesMap.value.containsKey(leagueId)){
-            useCase(met = "Fixtures", leagueId = leagueId, from = "2022-01-01", to = "2023-04-24", apiKey = Constants.API_KEY).collectLatest{
+            useCase(met = "Fixtures", leagueId = leagueId, from = from, to = to, apiKey = Constants.API_KEY).collectLatest{
                 when(it){
                     is ApiResponse.Loading -> {
                         _fixtures.value = fixtures.value.copy(

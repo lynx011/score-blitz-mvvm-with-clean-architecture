@@ -3,6 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.screens.DashboardFragment">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.lynx.scoreblitz.presentation.view_models.ScoreViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_bg"
+        android:orientation="vertical">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:backgroundTint="@android:color/transparent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/pickDate"
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                android:padding="8dp"
+                android:onClick="@{() -> viewModel.onDateRangePicker()}"
+                android:src="@drawable/calendar"
+                android:layout_gravity="end"/>
+        </LinearLayout>
+
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refreshLayout"
@@ -11,8 +42,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/main_bg">
+            android:orientation="vertical">
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/leagueShimmer"
                 android:layout_width="wrap_content"
@@ -90,5 +120,6 @@
                 tools:listitem="@layout/played_match_item"/>
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
 
 </layout>
