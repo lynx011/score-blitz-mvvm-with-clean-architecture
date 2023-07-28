@@ -41,22 +41,18 @@ class H2hAdapter(
         val h2h = differ.currentList[position]
         h2h?.let(holder::bind)
 
-        if (viewModel.selectedFixture.value?.home_team_key == h2h.home_team_key || viewModel.selectedFixture.value?.home_team_key == h2h.away_team_key){
-            val logo = viewModel.selectedFixture.value?.home_team_logo
-            if (viewModel.selectedFixture.value?.home_team_key == h2h.home_team_key){
-                holder.loadImage(logo,holder.binding.homeLogo)
-            }else{
-                holder.loadImage(logo,holder.binding.awayLogo)
-            }
-        }
-        if (viewModel.selectedFixture.value?.away_team_key == h2h.away_team_key || viewModel.selectedFixture.value?.away_team_key == h2h.home_team_key){
-            val logo = viewModel.selectedFixture.value?.away_team_logo
-            if (viewModel.selectedFixture.value?.away_team_key == h2h.away_team_key){
-                holder.loadImage(logo,holder.binding.awayLogo)
-            }else{
-                holder.loadImage(logo,holder.binding.homeLogo)
-            }
-        }
+        val selectedFixture = viewModel.selectedFixture.value
+
+        val logo = selectedFixture?.home_team_logo
+        if (selectedFixture?.home_team_key == h2h.home_team_key)
+            holder.loadImage(logo, holder.binding.homeLogo)
+        else holder.loadImage(logo, holder.binding.awayLogo)
+
+        val logo1 = selectedFixture?.away_team_logo
+        if (selectedFixture?.away_team_key == h2h.away_team_key)
+            holder.loadImage(logo1, holder.binding.awayLogo)
+        else holder.loadImage(logo1, holder.binding.homeLogo)
+
 
         holder.itemView.setOnClickListener { _ ->
             clickOnH2h?.let { it -> it(h2h) }

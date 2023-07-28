@@ -27,6 +27,7 @@
                     android:id="@+id/h2hRec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="true"
                     tools:listitem="@layout/h2h_item"/>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
