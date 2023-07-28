@@ -45,11 +45,7 @@ class StatsFragment : Fragment() {
 
     private fun observeStats() {
         val filtered =
-            viewModel.fixtureList.value?.find { it?.home_team_key == viewModel.selectedFixture.value?.home_team_key
-                    && it?.away_team_key == viewModel.selectedFixture.value?.away_team_key
-                    && it?.event_key == viewModel.selectedFixture.value?.event_key
-                    && it?.event_date == viewModel.selectedFixture.value?.event_date
-                    && it?.event_time == viewModel.selectedFixture.value?.event_time}
+            viewModel.fixtureLiveData.value?.find { it?.event_key == viewModel.selectedFixture.value?.event_key }
         viewModel.stats.value = filtered?.statistics
         statsAdapter.differ.submitList(viewModel.stats.value)
     }

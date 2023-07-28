@@ -1,5 +1,6 @@
 package com.lynx.scoreblitz.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -46,6 +47,7 @@ class LeaguesAdapter(private val viewModel: ScoreViewModel,
         return differ.currentList.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: LeaguesViewHolder, position: Int) {
         val leagues = differ.currentList[position]
 

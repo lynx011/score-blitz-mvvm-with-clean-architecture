@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lynx.scoreblitz.databinding.H2hItemBinding
-import com.lynx.scoreblitz.databinding.PlayedMatchItemBinding
-import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.H2HModel
 import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
 
@@ -44,13 +42,13 @@ class H2hAdapter(
         h2h?.let(holder::bind)
 
         val homeKey =
-            viewModel.fixtureList.value?.find { it?.home_team_key == h2h.home_team_key }?.home_team_key
+            viewModel.fixtureLiveData.value?.find { it?.home_team_key == h2h.home_team_key }?.home_team_key
         val awayKey =
-            viewModel.fixtureList.value?.find { it?.away_team_key == h2h.away_team_key }?.away_team_key
+            viewModel.fixtureLiveData.value?.find { it?.away_team_key == h2h.away_team_key }?.away_team_key
         val filteredHome =
-            viewModel.fixtureList.value?.find { it?.home_team_logo == viewModel.selectedFixture.value?.home_team_logo && it?.home_team_key == h2h.home_team_key }?.home_team_logo.toString()
+            viewModel.fixtureLiveData.value?.find { it?.home_team_logo == viewModel.selectedFixture.value?.home_team_logo && it?.home_team_key == h2h.home_team_key }?.home_team_logo.toString()
         val filteredAway =
-            viewModel.fixtureList.value?.find { it?.away_team_logo == viewModel.selectedFixture.value?.away_team_logo && it?.away_team_key == h2h.away_team_key }?.away_team_logo.toString()
+            viewModel.fixtureLiveData.value?.find { it?.away_team_logo == viewModel.selectedFixture.value?.away_team_logo && it?.away_team_key == h2h.away_team_key }?.away_team_logo.toString()
 
 
 

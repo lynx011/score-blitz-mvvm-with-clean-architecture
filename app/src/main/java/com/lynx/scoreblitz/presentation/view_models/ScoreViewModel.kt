@@ -41,8 +41,6 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
     private val _h2h = MutableStateFlow(H2HStates())
     val h2h : StateFlow<H2HStates> = _h2h
 
-    val pickedDate = MutableLiveData<Pair<String?,String?>?>()
-
     val startDate = MutableLiveData<String?>()
 
     val endDate = MutableLiveData<String?>()
@@ -57,17 +55,11 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
 
     val selectedLeaguePosition = MutableLiveData<Int?>()
 
-    val fixtureList = MutableLiveData<List<FixtureResult?>?>()
-
     val selectedFixture = MutableLiveData<FixtureResult?>()
 
     val key = MutableLiveData<Int?>()
 
     val h2hResult = MutableLiveData<List<H2HModel?>?>()
-
-    val h2hFirstTeamResult = MutableLiveData<List<FirstTeamH2H?>?>()
-
-    val h2hSecondTeamResult = MutableLiveData<List<SecondTeamH2H?>?>()
 
     val stats = MutableLiveData<List<Statistic?>?>()
 
@@ -167,10 +159,15 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
         _fixtures.value = FixturesStates(false, emptyList(), "")
         isSelectedLeague.value = false
         selectedLeaguePosition.value = null
+        selectedLeagueKey.value = null
         selectedFixture.value = null
         key.value = null
         h2hResult.value = null
         stats.value = null
+        startDate.value = ""
+        endDate.value = ""
+        leagueLiveData.value = emptyList()
+        fixtureLiveData.value = emptyList()
         _actions.resetReplayCache()
     }
 
