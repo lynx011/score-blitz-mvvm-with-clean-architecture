@@ -26,6 +26,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -53,6 +54,12 @@ class DashboardFragment : Fragment() {
         initViewModel()
         observeRoutines()
         swipeToRefresh()
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val defaultStartDate = dateFormat.format(Date().time - 604800000L)
+        viewModel.defaultEndDate.value = defaultStartDate
+        val defaultEndDate = dateFormat.format(Date().time + 604800000L)
+        viewModel.defaultEndDate.value = defaultEndDate
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -69,7 +76,7 @@ class DashboardFragment : Fragment() {
             }
 
             viewModel.selectedLeagueKey.value = league.league_key
-                viewModel.getFixtures(league.league_key ?: 152, viewModel.startDate.value ?: "2022-01-10", viewModel.endDate.value ?: "2023-05-10")
+                viewModel.getFixtures(league.league_key ?: 152, viewModel.startDate.value ?: viewModel.defaultStartDate.value?:"2022-01-10", viewModel.endDate.value ?: viewModel.defaultEndDate.value?:"2023-05-10")
         }
         binding.leagueRec.adapter = leaguesAdapter
 
@@ -173,7 +180,7 @@ class DashboardFragment : Fragment() {
     private fun observeLeaguesAndFixtures(){
         viewModel.leagueLiveData.observe(viewLifecycleOwner){leagues ->
             if (viewModel.fixtureLiveData.value == null){
-                viewModel.getFixtures(leagues?.get(0)?.league_key!!, viewModel.startDate.value ?: "2022-01-10", viewModel.endDate.value ?: "2023-05-10")
+                viewModel.getFixtures(leagues?.get(0)?.league_key!!, viewModel.startDate.value ?: viewModel.defaultStartDate.value?:"2022-01-10", viewModel.endDate.value ?: viewModel.defaultEndDate.value?:"2023-05-10")
                 observeFixtures()
             }
             leaguesAdapter.differ.submitList(leagues ?: emptyList())
@@ -192,6 +199,13 @@ class DashboardFragment : Fragment() {
         }
     }
 
+//    private fun defaultDate(type: String) : String {
+//        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//        return if (type == "start"){
+//            dateFormat.format(Date().time - 604800000L).toString()
+//        }else dateFormat.format(Date().time + 604800000L).toString()
+//    }
+
     private fun pickDateRange(){
         val builder = MaterialDatePicker.Builder.dateRangePicker()
         val picker = builder.build()
@@ -205,7 +219,7 @@ class DashboardFragment : Fragment() {
             viewModel.endDate.value = formatDate.format(Date(it.second))
             viewModel.getLeagues()
             viewModel.getFixtures(viewModel.selectedLeagueKey.value?: viewModel.leagueLiveData.value?.get(0)?.league_key
-            ?:152,viewModel.startDate.value?:"2022-01-10",viewModel.endDate.value?:"2023-05-10")
+            ?:152,viewModel.startDate.value?:viewModel.defaultStartDate.value?:"2022-01-10",viewModel.endDate.value?:viewModel.defaultEndDate.value?:"2023-05-10")
             binding.refreshLayout.isRefreshing = false
         }
         picker.isCancelable = false
@@ -215,7 +229,7 @@ class DashboardFragment : Fragment() {
         binding.refreshLayout.setOnRefreshListener {
             viewModel.getLeagues()
             viewModel.getFixtures(viewModel.selectedLeagueKey.value?: viewModel.leagueLiveData.value?.get(0)?.league_key
-            ?:152,viewModel.startDate.value?:"2022-01-10",viewModel.endDate.value?:"2023-05-10")
+            ?:152,viewModel.startDate.value?:viewModel.defaultStartDate.value?:"2022-01-10",viewModel.endDate.value?:viewModel.defaultEndDate.value?:"2023-05-10")
             binding.refreshLayout.isRefreshing = false
         }
     }

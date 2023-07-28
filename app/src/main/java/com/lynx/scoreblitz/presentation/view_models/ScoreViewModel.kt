@@ -57,6 +57,9 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
 
     val selectedFixture = MutableLiveData<FixtureResult?>()
 
+    val defaultStartDate = MutableLiveData<String?>()
+    val defaultEndDate = MutableLiveData<String?>()
+
     val key = MutableLiveData<Int?>()
 
     val h2hResult = MutableLiveData<List<H2HModel?>?>()

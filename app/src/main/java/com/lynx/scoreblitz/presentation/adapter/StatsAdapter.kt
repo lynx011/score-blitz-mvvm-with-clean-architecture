@@ -36,6 +36,18 @@ class StatsAdapter(private val clickOnStats: ((Statistic) -> Unit)? = null) :
             }else{
                 binding.awayProgressBar.progress = result.away?.toInt() ?: 0
             }
+            val home = binding.homeProgressBar
+            val away = binding.awayProgressBar
+            if (home.progress in 1..30 && away.progress in 1..30){
+                home.max = 30
+                away.max = 30
+            }else if(home.progress in 30..60 && away.progress in 30..60){
+                home.max = 60
+                away.max = 60
+            }else if (home.progress in 60..90 && away.progress in 60..90){
+                home.max = 90
+                away.max = 90
+            }
         }
     }
 
