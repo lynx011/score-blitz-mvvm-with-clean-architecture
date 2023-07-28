@@ -41,29 +41,22 @@ class H2hAdapter(
         val h2h = differ.currentList[position]
         h2h?.let(holder::bind)
 
-        val homeKey =
-            viewModel.fixtureLiveData.value?.find { it?.home_team_key == h2h.home_team_key }?.home_team_key
-        val awayKey =
-            viewModel.fixtureLiveData.value?.find { it?.away_team_key == h2h.away_team_key }?.away_team_key
-        val filteredHome =
-            viewModel.fixtureLiveData.value?.find { it?.home_team_logo == viewModel.selectedFixture.value?.home_team_logo && it?.home_team_key == h2h.home_team_key }?.home_team_logo.toString()
-        val filteredAway =
-            viewModel.fixtureLiveData.value?.find { it?.away_team_logo == viewModel.selectedFixture.value?.away_team_logo && it?.away_team_key == h2h.away_team_key }?.away_team_logo.toString()
-
-
-
-            if(homeKey == h2h.home_team_key){
-                holder.loadImage(filteredHome,holder.binding.homeLogo)
+        if (viewModel.selectedFixture.value?.home_team_key == h2h.home_team_key || viewModel.selectedFixture.value?.home_team_key == h2h.away_team_key){
+            val logo = viewModel.selectedFixture.value?.home_team_logo
+            if (viewModel.selectedFixture.value?.home_team_key == h2h.home_team_key){
+                holder.loadImage(logo,holder.binding.homeLogo)
             }else{
-                holder.loadImage(filteredAway,holder.binding.homeLogo)
+                holder.loadImage(logo,holder.binding.awayLogo)
             }
-
-        if(awayKey == h2h.away_team_key){
-            holder.loadImage(filteredAway,holder.binding.awayLogo)
-        }else{
-            holder.loadImage(filteredHome,holder.binding.awayLogo)
         }
-
+        if (viewModel.selectedFixture.value?.away_team_key == h2h.away_team_key || viewModel.selectedFixture.value?.away_team_key == h2h.home_team_key){
+            val logo = viewModel.selectedFixture.value?.away_team_logo
+            if (viewModel.selectedFixture.value?.away_team_key == h2h.away_team_key){
+                holder.loadImage(logo,holder.binding.awayLogo)
+            }else{
+                holder.loadImage(logo,holder.binding.homeLogo)
+            }
+        }
 
         holder.itemView.setOnClickListener { _ ->
             clickOnH2h?.let { it -> it(h2h) }
