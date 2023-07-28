@@ -2,6 +2,7 @@ package com.lynx.scoreblitz.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -25,28 +26,35 @@ class StatsAdapter(private val clickOnStats: ((Statistic) -> Unit)? = null) :
         fun bind(result: Statistic) {
             binding.stats = result
             binding.executePendingBindings()
-            if (result.home?.contains("%") == true){
-                binding.homeProgressBar.progress = result.home.replace("%","").toInt()
-            }else{
-                binding.homeProgressBar.progress = result.home?.toInt() ?: 0
-            }
+            val homeProgress = binding.homeProgressBar
+            val awayProgress = binding.awayProgressBar
+            homeProgress.progress = parseProgressValue(result.home)
+            awayProgress.progress = parseProgressValue(result.away)
 
-            if (result.away?.contains("%") == true){
-                binding.awayProgressBar.progress = result.away.replace("%","").toInt()
-            }else{
-                binding.awayProgressBar.progress = result.away?.toInt() ?: 0
+            setProgressBarMax(homeProgress.progress, binding.homeProgressBar)
+            setProgressBarMax(awayProgress.progress, binding.awayProgressBar)
+        }
+
+        private fun parseProgressValue(value: String?): Int {
+            return if (value?.contains("%") == true) {
+                value.replace("%", "").toIntOrNull() ?: 0
+            } else {
+                value?.toIntOrNull() ?: 0
             }
-            val home = binding.homeProgressBar
-            val away = binding.awayProgressBar
-            if (home.progress in 1..30 && away.progress in 1..30){
-                home.max = 30
-                away.max = 30
-            }else if(home.progress in 30..60 && away.progress in 30..60){
-                home.max = 60
-                away.max = 60
-            }else if (home.progress in 60..90 && away.progress in 60..90){
-                home.max = 90
-                away.max = 90
+        }
+
+        private fun setProgressBarMax(progress: Int, progressBar: ProgressBar) {
+            progressBar.max = when (progress) {
+                in 1..10 -> 10
+                in 10..20 -> 25
+                in 20..40 -> 40
+                in 40..60 -> 60
+                in 60..80 -> 80
+                in 80..100 -> 150
+                in 100..140 -> 160
+                in 200..400 -> 400
+                in 300..600 -> 600
+                else -> { 100 }
             }
         }
     }
@@ -54,6 +62,12 @@ class StatsAdapter(private val clickOnStats: ((Statistic) -> Unit)? = null) :
     override fun onBindViewHolder(holder: StatsViewHolder, position: Int) {
         val stats = differ.currentList[position]
         stats?.let(holder::bind)
+
+        if (stats.type == "Ball Possession"){
+            holder.binding.type.text = "Possession(%)"
+            holder.binding.homeProgressBar.progress = 100
+            holder.binding.awayProgressBar.progress = 100
+        }
 
         holder.itemView.setOnClickListener { _ ->
             clickOnStats?.let { it -> it(stats) }

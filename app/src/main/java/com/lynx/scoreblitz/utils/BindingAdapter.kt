@@ -61,3 +61,10 @@ fun redCardsVisibility(view: View, result: FixtureResult?) {
     view.visibility = if (hasHomeRedCard || hasAwayRedCard) View.VISIBLE else View.GONE
 }
 
+//@BindingAdapter("possession")
+//fun possession(view: TextView, stats: String?){
+//    if (stats == "Ball Possession"){
+//        view.text = "Possession(%)"
+//    }
+//}
+
