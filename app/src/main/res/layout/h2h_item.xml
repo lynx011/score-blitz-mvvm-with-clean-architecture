@@ -32,7 +32,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="12sp"
                         android:textColor="@color/light_grey"
-                        android:text="@{h2h.event_date}"
+                        app:formattedDate="@{h2h.event_date}"
                         android:layout_marginTop="4dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

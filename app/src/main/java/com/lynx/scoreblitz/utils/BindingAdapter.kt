@@ -4,9 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
-import com.lynx.scoreblitz.domain.model.Card
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -34,7 +32,7 @@ fun formatDate(view: TextView, date: String?) {
 fun formattedDate(view: TextView, date: String?) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val localDate = LocalDate.parse(date, formatter)
-    val outputFormatter = DateTimeFormatter.ofPattern("MMM, dd yyyy")
+    val outputFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
     view.text = localDate.format(outputFormatter) ?: "-"
 }
 
@@ -53,18 +51,21 @@ fun splitName(view: TextView, name: String?) {
     view.text = nextWord
 }
 
-@BindingAdapter("cardVisibility")
-fun redCardsVisibility(view: View, result: FixtureResult?) {
-    val hasHomeRedCard = result?.cards?.any { it?.card == "red card" && it.home_fault?.isNotEmpty() == true } ?: false
-    val hasAwayRedCard = result?.cards?.any { it?.card == "red card" && it.away_fault?.isNotEmpty() == true } ?: false
-
-    view.visibility = if (hasHomeRedCard || hasAwayRedCard) View.VISIBLE else View.GONE
+@BindingAdapter("result","type")
+fun redCardsVisibility(view: View, result: FixtureResult?, type: Int?) {
+    if (type == result?.home_team_key){
+        val red = result?.cards?.find { it?.card == "red card" && it.home_fault != null }
+        if (red != null) view.visibility = View.VISIBLE
+        else view.visibility = View.GONE
+    }
+    if (type == result?.away_team_key){
+        val red = result?.cards?.find { it?.card == "red card" && it.away_fault != null}
+        if (red != null) view.visibility = View.VISIBLE
+        else view.visibility = View.GONE
+    }
 }
 
-//@BindingAdapter("possession")
-//fun possession(view: TextView, stats: String?){
-//    if (stats == "Ball Possession"){
-//        view.text = "Possession(%)"
-//    }
-//}
-
+@BindingAdapter("eventResult","eventDate")
+fun eventResultOnDetail(view: TextView, result: String?, event: String?){
+    view.text = if (result == "") event.toString() else result ?: "N/A"
+}

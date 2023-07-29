@@ -26,7 +26,7 @@ class H2HFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentH2HBinding.inflate(inflater,container,false)
+        binding = FragmentH2HBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,13 +44,17 @@ class H2HFragment : Fragment() {
         binding.h2hRec.adapter = h2hAdapter
     }
 
-    private fun observeH2H(){
+    private fun observeH2H() {
         CoroutineScope(Dispatchers.Main).launch {
             viewModel.h2h.collectLatest {
-                when{
+                when {
                     !it.h2h?.H2H.isNullOrEmpty() -> {
                         viewModel.h2hResult.value = it.h2h?.H2H
-                        h2hAdapter.differ.submitList(it.h2h?.H2H)
+                        if (it.h2h?.H2H != null) {
+                            binding.notFoundH2H.visibility = View.GONE
+                            h2hAdapter.differ.submitList(it.h2h.H2H)
+                        } else binding.notFoundH2H.visibility = View.VISIBLE
+
                     }
                 }
             }

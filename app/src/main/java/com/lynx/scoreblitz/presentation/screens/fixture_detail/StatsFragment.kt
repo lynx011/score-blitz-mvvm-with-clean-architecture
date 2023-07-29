@@ -44,9 +44,14 @@ class StatsFragment : Fragment() {
     }
 
     private fun observeStats() {
-        val filtered =
-            viewModel.fixtureLiveData.value?.find { it?.event_key == viewModel.selectedFixture.value?.event_key }
-        viewModel.stats.value = filtered?.statistics
-        statsAdapter.differ.submitList(viewModel.stats.value)
+        viewModel.fixtureLiveData.observe(viewLifecycleOwner) { fixtures ->
+            val filtered =
+                fixtures?.find { it?.event_key == viewModel.selectedFixture.value?.event_key }
+            viewModel.stats.value = filtered?.statistics
+            statsAdapter.differ.submitList(viewModel.stats.value)
+            binding.notFoundStats.visibility =
+                if (viewModel.stats.value != null) View.VISIBLE else View.GONE
+
+        }
     }
 }

@@ -11,40 +11,60 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.lynx.scoreblitz.databinding.FragmentFixtureDetailsBinding
-import com.lynx.scoreblitz.presentation.adapter.FixturePagerAdapter
 import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
+import com.lynx.scoreblitz.utils.navigateUp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class FixtureDetailsFragment : Fragment() {
     private lateinit var binding: FragmentFixtureDetailsBinding
     private val viewModel: ScoreViewModel by activityViewModels()
-    private lateinit var pagerAdapter: FixturePagerAdapter
-    private lateinit var tabLayout: TabLayout
     private lateinit var viewPager2: ViewPager2
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFixtureDetailsBinding.inflate(inflater,container,false)
+        binding = FragmentFixtureDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        setupViewPager()
+        setupViewPager(binding.tabLayout)
+        setupViewPager(binding.toolTabLayout)
         viewModel.getH2H()
+        toolbarVisibility()
+        binding.backKey.setOnClickListener {
+            navigateUp()
+        }
     }
 
-    private fun initViewModel(){
+    private fun initViewModel() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
     }
 
-    private fun setupViewPager(){
-        val pagerAdapter = object : FragmentStateAdapter(parentFragmentManager,lifecycle){
+    private fun toolbarVisibility() {
+        binding.appBarLayout.addOnOffsetChangedListener { _, verticalOffset ->
+            val totalScrollRange = binding.appBarLayout.totalScrollRange
+
+            val percentage = -verticalOffset / totalScrollRange.toFloat()
+
+            if (percentage == 0f) {
+                binding.toolbarResultLayout.visibility = View.GONE
+                binding.toolTabLayout.visibility = View.GONE
+            } else {
+                binding.toolbarResultLayout.visibility = View.VISIBLE
+                binding.toolTabLayout.visibility = View.VISIBLE
+            }
+
+        }
+    }
+
+    private fun setupViewPager(tab: TabLayout) {
+        val pagerAdapter = object : FragmentStateAdapter(parentFragmentManager, lifecycle) {
             override fun getItemCount(): Int {
                 return 2
             }
@@ -55,34 +75,33 @@ class FixtureDetailsFragment : Fragment() {
             }
 
         }
-        tabLayout = binding.tabLayout
+
+        tab.addTab(tab.newTab().setText("H2H"))
+        tab.addTab(tab.newTab().setText("Stats"))
         viewPager2 = binding.viewPager2
-
-//        pagerAdapter = FixturePagerAdapter(childFragmentManager,lifecycle)
-
-        tabLayout.addTab(tabLayout.newTab().setText("H2H"))
-        tabLayout.addTab(tabLayout.newTab().setText("STATS"))
 
         viewPager2.adapter = pagerAdapter
 
-        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener{
+        tab.addOnTabSelectedListener(object : OnTabSelectedListener {
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if (tab != null)
                     viewPager2.currentItem = tab.position
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {
             }
+
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
 
         })
 
-        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                tabLayout.selectTab(tabLayout.getTabAt(position))
+                tab.selectTab(tab.getTabAt(position))
             }
         })
     }
-    }
+}

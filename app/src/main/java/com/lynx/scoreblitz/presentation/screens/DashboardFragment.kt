@@ -26,7 +26,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -66,9 +65,9 @@ class DashboardFragment : Fragment() {
     private fun setupHeaderLeagues() {
         binding.leagueRec.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        leaguesAdapter = LeaguesAdapter(viewModel) {league ->
+        leaguesAdapter = LeaguesAdapter(viewModel) { league ->
 
-            if (viewModel.fixtureLiveData.value != null && viewModel.key.value != null){
+            if (viewModel.fixtureLiveData.value != null && viewModel.key.value != null) {
                 viewModel.key.value = null
                 viewModel.fixtureLiveData.value = null
                 fixturesAdapter.differ.submitList(emptyList())
@@ -76,12 +75,16 @@ class DashboardFragment : Fragment() {
             }
 
             viewModel.selectedLeagueKey.value = league.league_key
-                viewModel.getFixtures(league.league_key ?: 152, viewModel.startDate.value ?: viewModel.defaultStartDate.value?:"2022-01-10", viewModel.endDate.value ?: viewModel.defaultEndDate.value?:"2023-05-10")
+            viewModel.getFixtures(
+                league.league_key ?: 152,
+                viewModel.startDate.value ?: viewModel.defaultStartDate.value ?: "2022-01-10",
+                viewModel.endDate.value ?: viewModel.defaultEndDate.value ?: "2023-05-10"
+            )
         }
         binding.leagueRec.adapter = leaguesAdapter
 
         binding.fixtureRec.layoutManager = LinearLayoutManager(requireContext())
-        fixturesAdapter = FixturesAdapter {result ->
+        fixturesAdapter = FixturesAdapter { result ->
             viewModel.selectedFixture.value = result
             navigate(R.id.nav_fixture_details)
 
@@ -89,15 +92,15 @@ class DashboardFragment : Fragment() {
         binding.fixtureRec.adapter = fixturesAdapter
     }
 
-    private fun initViewModel(){
+    private fun initViewModel() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
     }
 
     @SuppressLint("ResourceType")
-    private fun observeRoutines(){
-        viewModel.actions.collectLatest(viewLifecycleOwner){ it ->
-            when(it){
+    private fun observeRoutines() {
+        viewModel.actions.collectLatest(viewLifecycleOwner) { it ->
+            when (it) {
                 ScoreActions.OnPickDate -> {
                     pickDateRange()
                 }
@@ -117,13 +120,15 @@ class DashboardFragment : Fragment() {
                             leagueRec.visibility = View.GONE
                         }
                     }
+
                     it.leagues.isNotEmpty() -> {
                         binding.apply {
                             leagueShimmer.stopShimmer()
                             leagueShimmer.visibility = View.GONE
                             leagueRec.visibility = View.VISIBLE
                         }
-                        viewModel.leagueLiveData.value = it.leagues.filter {league -> league.league_key != 1 }
+                        viewModel.leagueLiveData.value =
+                            it.leagues.filter { league -> league.league_key != 1 }
 
                     }
 
@@ -177,10 +182,14 @@ class DashboardFragment : Fragment() {
         }
     }
 
-    private fun observeLeaguesAndFixtures(){
-        viewModel.leagueLiveData.observe(viewLifecycleOwner){leagues ->
-            if (viewModel.fixtureLiveData.value == null){
-                viewModel.getFixtures(leagues?.get(0)?.league_key!!, viewModel.startDate.value ?: viewModel.defaultStartDate.value?:"2022-01-10", viewModel.endDate.value ?: viewModel.defaultEndDate.value?:"2023-05-10")
+    private fun observeLeaguesAndFixtures() {
+        viewModel.leagueLiveData.observe(viewLifecycleOwner) { leagues ->
+            if (viewModel.fixtureLiveData.value == null) {
+                viewModel.getFixtures(
+                    leagues?.get(0)?.league_key!!,
+                    viewModel.startDate.value ?: viewModel.defaultStartDate.value ?: "2022-01-10",
+                    viewModel.endDate.value ?: viewModel.defaultEndDate.value ?: "2023-05-10"
+                )
                 observeFixtures()
             }
             leaguesAdapter.differ.submitList(leagues ?: emptyList())
@@ -188,13 +197,13 @@ class DashboardFragment : Fragment() {
             else binding.leagueShimmer.visibility = View.GONE
         }
 
-        viewModel.fixtureLiveData.observe(viewLifecycleOwner){fixtures ->
+        viewModel.fixtureLiveData.observe(viewLifecycleOwner) { fixtures ->
             if (fixtures.isNullOrEmpty()) binding.fixtureShimmer.visibility = View.VISIBLE
             else binding.fixtureShimmer.visibility = View.GONE
             fixturesAdapter.differ.submitList(fixtures ?: emptyList())
         }
 
-        if (viewModel.leagueLiveData.value == null){
+        if (viewModel.leagueLiveData.value == null) {
             observeLeagues()
         }
     }
@@ -206,10 +215,12 @@ class DashboardFragment : Fragment() {
 //        }else dateFormat.format(Date().time + 604800000L).toString()
 //    }
 
-    private fun pickDateRange(){
+    private fun pickDateRange() {
         val builder = MaterialDatePicker.Builder.dateRangePicker()
+        builder.setTheme(R.style.DatePickerStyle)
+        builder.setTitleText("Set Date Range For Fixtures")
         val picker = builder.build()
-        picker.show(parentFragmentManager,"DATE_PICKER")
+        picker.show(parentFragmentManager, "DATE_PICKER")
         picker.addOnNegativeButtonClickListener {
             picker.dismiss()
         }
@@ -218,8 +229,13 @@ class DashboardFragment : Fragment() {
             viewModel.startDate.value = formatDate.format(Date(it.first))
             viewModel.endDate.value = formatDate.format(Date(it.second))
             viewModel.getLeagues()
-            viewModel.getFixtures(viewModel.selectedLeagueKey.value?: viewModel.leagueLiveData.value?.get(0)?.league_key
-            ?:152,viewModel.startDate.value?:viewModel.defaultStartDate.value?:"2022-01-10",viewModel.endDate.value?:viewModel.defaultEndDate.value?:"2023-05-10")
+            viewModel.getFixtures(
+                viewModel.selectedLeagueKey.value
+                    ?: viewModel.leagueLiveData.value?.get(0)?.league_key
+                    ?: 152,
+                viewModel.startDate.value ?: viewModel.defaultStartDate.value ?: "2022-01-10",
+                viewModel.endDate.value ?: viewModel.defaultEndDate.value ?: "2023-05-10"
+            )
             binding.refreshLayout.isRefreshing = false
         }
         picker.isCancelable = false
@@ -228,8 +244,13 @@ class DashboardFragment : Fragment() {
     private fun swipeToRefresh() {
         binding.refreshLayout.setOnRefreshListener {
             viewModel.getLeagues()
-            viewModel.getFixtures(viewModel.selectedLeagueKey.value?: viewModel.leagueLiveData.value?.get(0)?.league_key
-            ?:152,viewModel.startDate.value?:viewModel.defaultStartDate.value?:"2022-01-10",viewModel.endDate.value?:viewModel.defaultEndDate.value?:"2023-05-10")
+            viewModel.getFixtures(
+                viewModel.selectedLeagueKey.value
+                    ?: viewModel.leagueLiveData.value?.get(0)?.league_key
+                    ?: 152,
+                viewModel.startDate.value ?: viewModel.defaultStartDate.value ?: "2022-01-10",
+                viewModel.endDate.value ?: viewModel.defaultEndDate.value ?: "2023-05-10"
+            )
             binding.refreshLayout.isRefreshing = false
         }
     }

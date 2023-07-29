@@ -19,7 +19,7 @@ interface ScoreApiService {
         @Query("from") from: String,
         @Query("to") to: String,
         @Query("APIkey") apiKey: String
-    ) : FixturesDTO
+    ) : FixturesDTO?
 
     @GET("football")
     suspend fun getH2H(

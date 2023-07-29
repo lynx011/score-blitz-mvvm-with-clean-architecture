@@ -9,6 +9,10 @@ fun Fragment.navigate(resId: Int){
     findNavController().navigate(resId)
 }
 
+fun Fragment.navigateUp(){
+    findNavController().navigateUp()
+}
+
 fun Fragment.toast(message: String){
     Toast.makeText(context,message,Toast.LENGTH_SHORT).show()
 }
