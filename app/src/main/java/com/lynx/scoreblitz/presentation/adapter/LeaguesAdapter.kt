@@ -27,11 +27,11 @@ class LeaguesAdapter(private val viewModel: ScoreViewModel,
             if (selected){
                 binding.leagueCard.isEnabled = false
                 binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(binding.leagueCard.context,
-                    R.color.amber))
+                    R.color.black_glass2))
             }else{
                 binding.leagueCard.isEnabled = true
                 binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(binding.leagueCard.context,
-                    R.color.dark_grey))
+                    R.color.main_bg))
             }
 
         }

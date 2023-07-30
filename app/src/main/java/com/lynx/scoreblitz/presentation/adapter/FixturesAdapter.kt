@@ -2,13 +2,14 @@ package com.lynx.scoreblitz.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.lynx.scoreblitz.databinding.PlayedMatchItemBinding
 import com.lynx.scoreblitz.domain.model.FixtureResult
 
-class FixturesAdapter(private val clickOnFixture: ((FixtureResult) -> Unit)? = null) : RecyclerView.Adapter<FixturesAdapter.FixtureViewHolder>() {
+class FixturesAdapter(private val clickOnFixture: ((FixtureResult,ImageView,ImageView) -> Unit)? = null) : RecyclerView.Adapter<FixturesAdapter.FixtureViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -34,9 +35,11 @@ class FixturesAdapter(private val clickOnFixture: ((FixtureResult) -> Unit)? = n
             val splitScores = scores.split(" - ")
             holder.binding.homeResult.text = if (splitScores.size >= 2) splitScores[0] else "N/A"
             holder.binding.awayResult.text = if (splitScores.size >=2) splitScores[1] else "N/A"
+            holder.binding.homeLogo.transitionName = "home_logo_${it.league_key}"
+            holder.binding.awayLogo.transitionName = "away_logo_${it.league_key}"
         }
         holder.itemView.setOnClickListener {
-            clickOnFixture?.invoke(fixtures)
+            clickOnFixture?.invoke(fixtures,holder.binding.homeLogo,holder.binding.awayLogo)
         }
     }
 

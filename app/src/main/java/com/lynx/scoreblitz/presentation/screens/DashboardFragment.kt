@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.lynx.scoreblitz.R
@@ -84,9 +86,13 @@ class DashboardFragment : Fragment() {
         binding.leagueRec.adapter = leaguesAdapter
 
         binding.fixtureRec.layoutManager = LinearLayoutManager(requireContext())
-        fixturesAdapter = FixturesAdapter { result ->
+        fixturesAdapter = FixturesAdapter { result,home,away ->
             viewModel.selectedFixture.value = result
-            navigate(R.id.nav_fixture_details)
+            //navigate(R.id.nav_fixture_details)
+            home.transitionName = "home_logo_${result.league_key}"
+            away.transitionName = "away_logo_${result.league_key}"
+            val extras = FragmentNavigatorExtras(home to home.transitionName, away to away.transitionName)
+            findNavController().navigate(R.id.nav_fixture_details,null,null,extras)
 
         }
         binding.fixtureRec.adapter = fixturesAdapter
@@ -129,7 +135,6 @@ class DashboardFragment : Fragment() {
                         }
                         viewModel.leagueLiveData.value =
                             it.leagues.filter { league -> league.league_key != 1 }
-
                     }
 
                     it.error.isNotEmpty() -> {
@@ -155,6 +160,7 @@ class DashboardFragment : Fragment() {
                             fixtureShimmer.startShimmer()
                             fixtureShimmer.visibility = View.VISIBLE
                             fixtureRec.visibility = View.GONE
+                            notFoundFixtures.visibility = View.GONE
                         }
                     }
 
@@ -163,9 +169,18 @@ class DashboardFragment : Fragment() {
                             fixtureShimmer.stopShimmer()
                             fixtureShimmer.visibility = View.GONE
                             fixtureRec.visibility = View.VISIBLE
+                            notFoundFixtures.visibility = View.GONE
                         }
-
                         viewModel.fixtureLiveData.value = it.fixtures
+                    }
+
+                    it.fixtures.isNullOrEmpty() -> {
+                        binding.apply {
+                            fixtureShimmer.stopShimmer()
+                            fixtureShimmer.visibility = View.GONE
+                            fixtureRec.visibility = View.GONE
+                            notFoundFixtures.visibility = View.VISIBLE
+                        }
                     }
 
                     it.error.isNotEmpty() -> {
@@ -251,6 +266,8 @@ class DashboardFragment : Fragment() {
                 viewModel.startDate.value ?: viewModel.defaultStartDate.value ?: "2022-01-10",
                 viewModel.endDate.value ?: viewModel.defaultEndDate.value ?: "2023-05-10"
             )
+            observeLeagues()
+            observeFixtures()
             binding.refreshLayout.isRefreshing = false
         }
     }

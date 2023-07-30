@@ -21,12 +21,12 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black_glass2">
+            android:background="@color/main_bg">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="@color/black_glass2"
+                app:contentScrim="@color/main_bg"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,8 +48,10 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
+                            android:id="@+id/homeLogo"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
+                            android:transitionName="home_logo_${viewModel.selectedFixture.league_key}"
                             app:loadImage="@{viewModel.selectedFixture.home_team_logo}"
                             tools:src="@mipmap/ic_launcher" />
 
@@ -156,8 +158,10 @@
                         app:layout_constraintTop_toTopOf="@+id/homeLayout">
 
                         <ImageView
+                            android:id="@+id/awayLogo"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
+                            android:transitionName="home_logo_${viewModel.selectedFixture.league_key}"
                             app:loadImage="@{viewModel.selectedFixture.away_team_logo}"
                             tools:src="@mipmap/ic_launcher" />
 

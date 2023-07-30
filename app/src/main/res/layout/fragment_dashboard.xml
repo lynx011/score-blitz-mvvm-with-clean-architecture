@@ -142,13 +142,26 @@
                     </LinearLayout>
 
                 </com.facebook.shimmer.ShimmerFrameLayout>
-
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/fixtureRec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     tools:listitem="@layout/played_match_item" />
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/notFoundFixtures"
+                        android:layout_width="140dp"
+                        android:layout_height="180dp"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        app:lottie_autoPlay="true"
+                        android:layout_marginTop="80dp"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/not_found_tag" />
+                </FrameLayout>
             </LinearLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>

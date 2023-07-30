@@ -16,8 +16,8 @@
         app:strokeColor="@color/green_1"
         app:strokeWidth="1dp"
         android:layout_marginEnd="10dp"
-        android:outlineSpotShadowColor="@color/dark_grey"
-        android:outlineAmbientShadowColor="@color/dark_grey">
+        android:outlineSpotShadowColor="@color/main_bg"
+        android:outlineAmbientShadowColor="@color/main_bg">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

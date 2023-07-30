@@ -1,6 +1,7 @@
 package com.lynx.scoreblitz.presentation.screens.fixture_detail
 
 import android.os.Bundle
+import android.transition.TransitionInflater
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.lynx.scoreblitz.R
 import com.lynx.scoreblitz.databinding.FragmentFixtureDetailsBinding
 import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
 import com.lynx.scoreblitz.utils.navigateUp
@@ -20,6 +22,15 @@ class FixtureDetailsFragment : Fragment() {
     private lateinit var binding: FragmentFixtureDetailsBinding
     private val viewModel: ScoreViewModel by activityViewModels()
     private lateinit var viewPager2: ViewPager2
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val animation = TransitionInflater.from(requireContext()).inflateTransition(
+            android.R.transition.move
+        )
+        sharedElementEnterTransition = animation
+        sharedElementReturnTransition = animation
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

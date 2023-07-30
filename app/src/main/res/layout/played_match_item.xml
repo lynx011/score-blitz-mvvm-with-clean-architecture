@@ -52,6 +52,7 @@
                             android:textColor="@color/green_1"
                             tools:text="2"/>
                         <ImageView
+                            android:id="@+id/homeLogo"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_marginHorizontal="8dp"
@@ -81,6 +82,7 @@
                             android:textColor="@color/green_2"
                             tools:text="2"/>
                         <ImageView
+                            android:id="@+id/awayLogo"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginHorizontal="8dp"
