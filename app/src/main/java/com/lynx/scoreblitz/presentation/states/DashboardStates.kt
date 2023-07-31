@@ -15,9 +15,3 @@ data class FixturesStates(
     val fixtures: List<FixtureResult?>? = emptyList(),
     val error: String = ""
 )
-
-data class H2HStates(
-    val loading: Boolean = false,
-    val h2h: H2HResponse? = null,
-    val error: String = ""
-)

@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.lynx.scoreblitz.R
 import com.lynx.scoreblitz.databinding.LeagueItemsBinding
 import com.lynx.scoreblitz.domain.model.Leagues
-import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
+import com.lynx.scoreblitz.presentation.view_models.DashboardViewModel
 
-class LeaguesAdapter(private val viewModel: ScoreViewModel,
-    private val clickOnLeague: ((Leagues) -> Unit)? = null
+class LeaguesAdapter(private val viewModel: DashboardViewModel,
+                     private val clickOnLeague: ((Leagues) -> Unit)? = null
 ) : RecyclerView.Adapter<LeaguesAdapter.LeaguesViewHolder>() {
 
     class LeaguesViewHolder(

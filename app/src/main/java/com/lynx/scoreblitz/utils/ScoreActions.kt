@@ -1,5 +1,7 @@
 package com.lynx.scoreblitz.utils
 
-sealed class ScoreActions {
-    object OnPickDate : ScoreActions()
+sealed class NavActions {
+    object OnDashboard : NavActions()
+    object OnNews : NavActions()
+    object OnWatch : NavActions()
 }

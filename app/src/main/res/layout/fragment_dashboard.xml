@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.lynx.scoreblitz.presentation.view_models.ScoreViewModel" />
+            type="com.lynx.scoreblitz.presentation.view_models.DashboardViewModel" />
     </data>
 
     <LinearLayout
@@ -44,7 +44,6 @@
                     android:layout_width="46dp"
                     android:layout_height="46dp"
                     android:layout_gravity="center"
-                    android:onClick="@{() -> viewModel.onDateRangePicker()}"
                     android:padding="8dp"
                     android:src="@drawable/calendar" />
             </LinearLayout>
@@ -150,7 +149,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    tools:listitem="@layout/played_match_item" />
+                    tools:listitem="@layout/fixture_item" />
                     <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/notFoundFixtures"
                         android:layout_width="140dp"

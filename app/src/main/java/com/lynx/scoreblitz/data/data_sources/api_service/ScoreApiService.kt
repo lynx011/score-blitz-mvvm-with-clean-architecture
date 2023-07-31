@@ -5,6 +5,7 @@ import com.lynx.scoreblitz.data.data_sources.dto.FixtureResultDTO
 import com.lynx.scoreblitz.data.data_sources.dto.FixturesDTO
 import com.lynx.scoreblitz.data.data_sources.dto.H2HDTO
 import com.lynx.scoreblitz.data.data_sources.dto.LeaguesDTO
+import com.lynx.scoreblitz.utils.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

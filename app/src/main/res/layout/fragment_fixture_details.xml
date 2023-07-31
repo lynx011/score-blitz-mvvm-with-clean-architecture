@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="com.lynx.scoreblitz.presentation.view_models.ScoreViewModel" />
+            type="com.lynx.scoreblitz.presentation.view_models.DashboardViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -75,7 +75,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
-                        android:layout_marginBottom="16dp"
                         android:gravity="center"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -136,7 +135,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:paddingHorizontal="6dp"
-                                android:text="Full Time"
+                                app:ftResult="@{viewModel.selectedFixture.event_ft_result}"
+                                app:eventDate="@{viewModel.selectedFixture.event_date}"
                                 android:textColor="@color/deep_grey"
                                 android:textSize="13sp"
                                 android:textStyle="bold"

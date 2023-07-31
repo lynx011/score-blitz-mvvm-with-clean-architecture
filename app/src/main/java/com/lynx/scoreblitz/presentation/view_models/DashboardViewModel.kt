@@ -3,33 +3,24 @@ package com.lynx.scoreblitz.presentation.view_models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lynx.scoreblitz.domain.model.FirstTeamH2H
 import com.lynx.scoreblitz.domain.model.FixtureResult
-import com.lynx.scoreblitz.domain.model.H2HModel
 import com.lynx.scoreblitz.domain.model.Leagues
-import com.lynx.scoreblitz.domain.model.SecondTeamH2H
-import com.lynx.scoreblitz.domain.model.Statistic
-import com.lynx.scoreblitz.domain.use_cases.LeaguesUseCase
+import com.lynx.scoreblitz.domain.use_cases.DashboardUseCase
 import com.lynx.scoreblitz.presentation.states.FixturesStates
-import com.lynx.scoreblitz.presentation.states.H2HStates
 import com.lynx.scoreblitz.presentation.states.LeaguesStates
 import com.lynx.scoreblitz.utils.ApiResponse
 import com.lynx.scoreblitz.utils.Constants
-import com.lynx.scoreblitz.utils.ScoreActions
-import com.lynx.scoreblitz.utils.emit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : ViewModel() {
+class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCase) : ViewModel() {
 
     private val scope = viewModelScope
     private val _leagues = MutableStateFlow(LeaguesStates())
@@ -38,8 +29,6 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
     private val _fixtures = MutableStateFlow(FixturesStates())
     val fixtures : StateFlow<FixturesStates> = _fixtures
 
-    private val _h2h = MutableStateFlow(H2HStates())
-    val h2h : StateFlow<H2HStates> = _h2h
 
     val startDate = MutableLiveData<String?>()
 
@@ -62,19 +51,15 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
 
     val key = MutableLiveData<Int?>()
 
-    val h2hResult = MutableLiveData<List<H2HModel?>?>()
-
-    val stats = MutableLiveData<List<Statistic?>?>()
-
     private val fixturesMap = MutableStateFlow(mutableMapOf<Int,List<FixtureResult?>?>())
 
-    private var _actions = MutableSharedFlow<ScoreActions>()
-    val actions : SharedFlow<ScoreActions> = _actions
-
-
-    fun onDateRangePicker(){
-        _actions.emit(viewModelScope){ ScoreActions.OnPickDate }
-    }
+//    private var _actions = MutableSharedFlow<ScoreActions>()
+//    val actions : SharedFlow<ScoreActions> = _actions
+//
+//
+//    fun onDashboardNav(){
+//        _actions.emit(viewModelScope){ ScoreActions.OnPickDate }
+//    }
 
     fun getLeagues() = scope.launch(Dispatchers.IO) {
         useCase(met = "Leagues", apiKey = Constants.API_KEY).collectLatest{
@@ -131,31 +116,6 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
         }
     }
 
-    fun getH2H() = viewModelScope.launch(Dispatchers.IO) {
-        useCase(met = "H2H", selectedFixture.value?.home_team_key!!, selectedFixture.value?.away_team_key!!, Constants.API_KEY ).collectLatest {
-            when(it){
-                is ApiResponse.Loading -> {
-                    _h2h.value = h2h.value.copy(
-                        loading = true,
-                        h2h = it.data
-                    )
-                }
-                is ApiResponse.Success -> {
-                    _h2h.value = h2h.value.copy(
-                        loading = false,
-                        h2h = it.data
-                    )
-                }
-                is ApiResponse.Error -> {
-                    _h2h.value = h2h.value.copy(
-                        loading = false,
-                        error = it.message ?: "An Expected Error Occurred!"
-                    )
-                }
-            }
-        }
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     fun onClear(){
         _leagues.value = LeaguesStates(false, emptyList(),"")
@@ -165,13 +125,11 @@ class ScoreViewModel @Inject constructor(private val useCase: LeaguesUseCase) : 
         selectedLeagueKey.value = null
         selectedFixture.value = null
         key.value = null
-        h2hResult.value = null
-        stats.value = null
         startDate.value = ""
         endDate.value = ""
         leagueLiveData.value = emptyList()
         fixtureLiveData.value = emptyList()
-        _actions.resetReplayCache()
+//        _actions.resetReplayCache()
     }
 
 }

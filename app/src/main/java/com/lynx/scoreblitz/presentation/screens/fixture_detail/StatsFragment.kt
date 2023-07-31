@@ -9,14 +9,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lynx.scoreblitz.databinding.FragmentStatsBinding
 import com.lynx.scoreblitz.presentation.adapter.StatsAdapter
-import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
+import com.lynx.scoreblitz.presentation.view_models.DashboardViewModel
+import com.lynx.scoreblitz.presentation.view_models.FixtureDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class StatsFragment : Fragment() {
     private lateinit var binding: FragmentStatsBinding
     private lateinit var statsAdapter: StatsAdapter
-    private val viewModel: ScoreViewModel by activityViewModels()
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
+    private val detailViewModel: FixtureDetailsViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,13 +46,13 @@ class StatsFragment : Fragment() {
     }
 
     private fun observeStats() {
-        viewModel.fixtureLiveData.observe(viewLifecycleOwner) { fixtures ->
+        dashboardViewModel.fixtureLiveData.observe(viewLifecycleOwner) { fixtures ->
             val filtered =
-                fixtures?.find { it?.event_key == viewModel.selectedFixture.value?.event_key }
-            viewModel.stats.value = filtered?.statistics
-            statsAdapter.differ.submitList(viewModel.stats.value)
+                fixtures?.find { it?.event_key == dashboardViewModel.selectedFixture.value?.event_key }
+            detailViewModel.stats.value = filtered?.statistics
+            statsAdapter.differ.submitList(detailViewModel.stats.value)
             binding.notFoundStats.visibility =
-                if (viewModel.stats.value != null) View.VISIBLE else View.GONE
+                if (detailViewModel.stats.value != null) View.VISIBLE else View.GONE
 
         }
     }

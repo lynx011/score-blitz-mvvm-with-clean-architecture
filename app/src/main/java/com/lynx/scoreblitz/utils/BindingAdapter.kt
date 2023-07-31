@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LiveData
 import com.bumptech.glide.Glide
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import java.text.SimpleDateFormat
@@ -30,18 +31,15 @@ fun formatDate(view: TextView, date: String?) {
 
 @BindingAdapter("formattedDate")
 fun formattedDate(view: TextView, date: String?) {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val localDate = LocalDate.parse(date, formatter)
-    val outputFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-    view.text = localDate.format(outputFormatter) ?: "-"
+    view.text = dateFormat(date)
 }
 
 @BindingAdapter("formatTime")
 fun formatTime(view: TextView, time: String?) {
-    val inputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-    val date = time?.let { inputFormat.parse(it) } ?: "-"
-    val outputFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
-    view.text = outputFormat.format(date)
+//    val inputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+//    val date = time?.let { inputFormat.parse(it) } ?: "-"
+//    val outputFormat = SimpleDateFormat("hh:mm", Locale.getDefault())
+    view.text = timeFormat(time)
 }
 
 @BindingAdapter("splitName")
@@ -67,5 +65,19 @@ fun redCardsVisibility(view: View, result: FixtureResult?, type: Int?) {
 
 @BindingAdapter("eventResult","eventDate")
 fun eventResultOnDetail(view: TextView, result: String?, event: String?){
-    view.text = if (result == "") event.toString() else result ?: "N/A"
+    val time = timeFormat(event)
+    view.text = if (result == "") time else result ?: "N/A"
 }
+
+@BindingAdapter("fullResult","eventTime")
+fun ftVisibility(view: TextView,fullResult: String?,eventTime: String?){
+    val time = timeFormat(eventTime)
+    view.text = if (fullResult.isNullOrEmpty()) time else "FT"
+}
+
+@BindingAdapter("ftResult","eventDate")
+fun showHideDate(view: TextView,ftResult: String?,eventDate: String?){
+    val event = dateFormat(eventDate)
+    view.text = if (ftResult.isNullOrEmpty()) event else "FullTime"
+}
+

@@ -11,16 +11,17 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.lynx.scoreblitz.R
 import com.lynx.scoreblitz.databinding.FragmentFixtureDetailsBinding
-import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
+import com.lynx.scoreblitz.presentation.view_models.DashboardViewModel
+import com.lynx.scoreblitz.presentation.view_models.FixtureDetailsViewModel
 import com.lynx.scoreblitz.utils.navigateUp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class FixtureDetailsFragment : Fragment() {
     private lateinit var binding: FragmentFixtureDetailsBinding
-    private val viewModel: ScoreViewModel by activityViewModels()
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
+    private val detailViewModel: FixtureDetailsViewModel by activityViewModels()
     private lateinit var viewPager2: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +46,7 @@ class FixtureDetailsFragment : Fragment() {
         initViewModel()
         setupViewPager(binding.tabLayout)
         setupViewPager(binding.toolTabLayout)
-        viewModel.getH2H()
+        detailViewModel.getH2H(dashboardViewModel.selectedFixture.value?.home_team_key,dashboardViewModel.selectedFixture.value?.away_team_key)
         toolbarVisibility()
         binding.backKey.setOnClickListener {
             navigateUp()
@@ -53,7 +54,7 @@ class FixtureDetailsFragment : Fragment() {
     }
 
     private fun initViewModel() {
-        binding.viewModel = viewModel
+        binding.viewModel = dashboardViewModel
         binding.lifecycleOwner = viewLifecycleOwner
     }
 

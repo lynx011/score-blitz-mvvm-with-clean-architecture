@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lynx.scoreblitz.databinding.H2hItemBinding
 import com.lynx.scoreblitz.domain.model.H2HModel
-import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
+import com.lynx.scoreblitz.presentation.view_models.DashboardViewModel
 
 class H2hAdapter(
-    private val viewModel: ScoreViewModel,
+    private val viewModel: DashboardViewModel,
     private val clickOnH2h: ((H2HModel) -> Unit)? = null
 ) : RecyclerView.Adapter<H2hAdapter.H2hViewHolder>() {
     override fun onCreateViewHolder(

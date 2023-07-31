@@ -18,5 +18,24 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/nav_graph" />
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNav"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@color/main_bg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingHorizontal="8dp"
+            app:itemIconSize="24dp"
+            android:textStyle="bold"
+            app:itemIconTint="@color/green_1"
+            app:itemTextColor="@color/green_1"
+            android:textSize="14sp"
+            app:labelVisibilityMode="selected"
+            app:itemRippleColor="@color/black_glass2"
+            android:soundEffectsEnabled="true"
+            app:menu="@menu/nav_menu"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

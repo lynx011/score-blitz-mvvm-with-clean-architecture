@@ -49,13 +49,14 @@
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
                             android:textStyle="bold"
+                            android:layout_marginEnd="8dp"
                             android:textColor="@color/green_1"
                             tools:text="2"/>
                         <ImageView
                             android:id="@+id/homeLogo"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
-                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginEnd="8dp"
                             app:loadImage="@{fixture.home_team_logo}"
                             tools:src="@mipmap/ic_launcher"/>
                         <TextView
@@ -79,13 +80,14 @@
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
                             android:textStyle="bold"
+                            android:layout_marginEnd="8dp"
                             android:textColor="@color/green_2"
                             tools:text="2"/>
                         <ImageView
                             android:id="@+id/awayLogo"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:layout_marginHorizontal="8dp"
+                            android:layout_marginEnd="8dp"
                             app:loadImage="@{fixture.away_team_logo}"
                             tools:src="@mipmap/ic_launcher"/>
                         <TextView
@@ -119,24 +121,28 @@
                     android:textSize="12sp"
                     android:text="@{fixture.league_name}"
                     tools:text="Sep, 11 2022" />
+
                 <androidx.cardview.widget.CardView
-                    android:layout_width="40dp"
-                    android:layout_height="28dp"
-                    app:cardCornerRadius="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="26dp"
                     android:backgroundTint="@color/green_1"
-                    android:layout_marginVertical="14dp"
-                    android:outlineSpotShadowColor="@color/charcoal"
-                    android:outlineAmbientShadowColor="@color/charcoal"
+                    android:outlineAmbientShadowColor="@color/black_glass2"
+                    android:outlineSpotShadowColor="@color/black_glass2"
+                    app:cardCornerRadius="4dp"
                     app:cardElevation="10dp">
+
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/dark_grey"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
+                        android:layout_marginHorizontal="4dp"
+                        android:textColor="@color/dark_grey"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:text="FT"
-                        tools:text="FT"/>
+                        app:eventTime="@{fixture.event_time}"
+                        app:fullResult="@{fixture.event_ft_result}"
+                        tools:text="FT" />
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

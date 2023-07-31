@@ -16,10 +16,8 @@ import com.lynx.scoreblitz.R
 import com.lynx.scoreblitz.databinding.FragmentDashboardBinding
 import com.lynx.scoreblitz.presentation.adapter.FixturesAdapter
 import com.lynx.scoreblitz.presentation.adapter.LeaguesAdapter
-import com.lynx.scoreblitz.presentation.view_models.ScoreViewModel
-import com.lynx.scoreblitz.utils.ScoreActions
-import com.lynx.scoreblitz.utils.collectLatest
-import com.lynx.scoreblitz.utils.navigate
+import com.lynx.scoreblitz.presentation.view_models.DashboardViewModel
+import com.lynx.scoreblitz.presentation.view_models.FixtureDetailsViewModel
 import com.lynx.scoreblitz.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +32,8 @@ import java.util.Locale
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
     private lateinit var binding: FragmentDashboardBinding
-    private val viewModel: ScoreViewModel by activityViewModels()
+    private val viewModel: DashboardViewModel by activityViewModels()
+    private val detailsViewModel: FixtureDetailsViewModel by activityViewModels()
     private lateinit var leaguesAdapter: LeaguesAdapter
     private lateinit var fixturesAdapter: FixturesAdapter
 
@@ -53,7 +52,6 @@ class DashboardFragment : Fragment() {
         setupHeaderLeagues()
         observeLeaguesAndFixtures()
         initViewModel()
-        observeRoutines()
         swipeToRefresh()
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -61,6 +59,10 @@ class DashboardFragment : Fragment() {
         viewModel.defaultEndDate.value = defaultStartDate
         val defaultEndDate = dateFormat.format(Date().time + 604800000L)
         viewModel.defaultEndDate.value = defaultEndDate
+
+        binding.pickDate.setOnClickListener {
+            pickDateRange()
+        }
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -103,20 +105,9 @@ class DashboardFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
     }
 
-    @SuppressLint("ResourceType")
-    private fun observeRoutines() {
-        viewModel.actions.collectLatest(viewLifecycleOwner) { it ->
-            when (it) {
-                ScoreActions.OnPickDate -> {
-                    pickDateRange()
-                }
-            }
-        }
-    }
-
     private fun observeLeagues() {
         viewModel.getLeagues()
-        lifecycleScope.launch {
+        coroutineScope.launch {
             viewModel.leagues.collectLatest {
                 when {
                     it.loading -> {
@@ -253,7 +244,7 @@ class DashboardFragment : Fragment() {
             )
             binding.refreshLayout.isRefreshing = false
         }
-        picker.isCancelable = false
+        picker.isCancelable = true
     }
 
     private fun swipeToRefresh() {
