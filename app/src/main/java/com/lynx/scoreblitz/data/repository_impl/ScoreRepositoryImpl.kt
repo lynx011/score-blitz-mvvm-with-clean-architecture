@@ -4,10 +4,13 @@ import com.lynx.scoreblitz.data.data_sources.api_service.ScoreApiService
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.H2HResponse
 import com.lynx.scoreblitz.domain.model.Leagues
+import com.lynx.scoreblitz.domain.model.StandingList
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.ApiResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -25,13 +28,13 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
             } catch (e: HttpException) {
                 emit(
                     ApiResponse.Error(
-                        e.localizedMessage ?: "HttpException-An Expected Error Occurred!"
+                        e.localizedMessage ?: "HttpException-Unexpected Error Occurred!"
                     )
                 )
             } catch (e: IOException) {
                 emit(
                     ApiResponse.Error(
-                        e.localizedMessage ?: "IOException-An Expected Error Occurred!"
+                        e.localizedMessage ?: "IOException-Unexpected Error Occurred!"
                     )
                 )
             }
@@ -54,13 +57,13 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
         } catch (e: HttpException) {
             emit(
                 ApiResponse.Error(
-                    message = e.localizedMessage ?: "HttpException-An Expected Error Occurred!"
+                    message = e.localizedMessage ?: "HttpException-Unexpected Error Occurred!"
                 )
             )
         } catch (e: IOException) {
             emit(
                 ApiResponse.Error(
-                    message = e.localizedMessage ?: "IOException-An Expected Error Occurred!"
+                    message = e.localizedMessage ?: "IOException-Unexpected Error Occurred!"
                 )
             )
         }
@@ -80,11 +83,32 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
         } catch (e: HttpException) {
             emit(
                 ApiResponse.Error(
-                    e.localizedMessage ?: "HttpException-An Expected Error Occurred!"
+                    e.localizedMessage ?: "HttpException-Unexpected Error Occurred!"
                 )
             )
         } catch (e: IOException) {
-            emit(ApiResponse.Error(e.localizedMessage ?: "IOException-An Expected Error Occurred!"))
+            emit(ApiResponse.Error(e.localizedMessage ?: "IOException-Unexpected Error Occurred!"))
         }
     }
+
+    override suspend fun getStandings(
+        met: String,
+        leagueId: Int,
+        apiKey: String
+    ): Flow<ApiResponse<StandingList>> = flow {
+        try {
+            emit(ApiResponse.Loading())
+            val standings = apiService.getStandings(met, leagueId, apiKey).result.toStandingList()
+            emit(ApiResponse.Success(standings))
+        } catch (e: HttpException) {
+            emit(
+                ApiResponse.Error(
+                    e.localizedMessage ?: "HttpException-Unexpected Error Occurred!"
+                )
+            )
+        } catch (e: IOException) {
+            emit(ApiResponse.Error(e.localizedMessage ?: "IOException-Unexpected Error Occurred!"))
+        }
+    }
+
 }

@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,9 +33,12 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
     val fixtures : StateFlow<FixturesStates> = _fixtures
 
 
-    val startDate = MutableLiveData<String?>()
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val defaultDate = dateFormat.format(Date().time).toString()
 
-    val endDate = MutableLiveData<String?>()
+    val startDate = MutableLiveData(defaultDate)
+
+    val endDate = MutableLiveData(defaultDate)
 
     val leagueLiveData = MutableLiveData<List<Leagues?>?>()
 
@@ -88,31 +94,31 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
 
     fun getFixtures(leagueId: Int, from: String, to: String) = viewModelScope.launch(Dispatchers.IO) {
 //        if (!fixturesMap.value.containsKey(leagueId)){
-            useCase(met = "Fixtures", leagueId = leagueId, from = from, to = to, apiKey = Constants.API_KEY).collectLatest{
-                when(it){
-                    is ApiResponse.Loading -> {
-                        _fixtures.value = fixtures.value.copy(
-                            loading = true,
-                            fixtures = it.data?: emptyList()
-                        )
-                    }
-                    is ApiResponse.Success -> {
-                        val fixturesData = it.data ?: emptyList()
-                        _fixtures.value = fixtures.value.copy(
-                            loading = false,
-                            fixtures = fixturesData
-                        )
-                        // Store fixtures data in the map for the league ID
-//                        fixturesMap.value[leagueId] = it.data
-                    }
-                    is ApiResponse.Error -> {
-                        _fixtures.value = fixtures.value.copy(
-                            loading = false,
-                            error = it.message ?: "An Expected Error Occurred!"
-                        )
-                    }
+        useCase(met = "Fixtures", leagueId = leagueId, from = from, to = to, apiKey = Constants.API_KEY).collectLatest{
+            when(it){
+                is ApiResponse.Loading -> {
+                    _fixtures.value = fixtures.value.copy(
+                        loading = true,
+                        fixtures = it.data?: emptyList()
+                    )
                 }
-    //        }
+                is ApiResponse.Success -> {
+                    val fixturesData = it.data ?: emptyList()
+                    _fixtures.value = fixtures.value.copy(
+                        loading = false,
+                        fixtures = fixturesData
+                    )
+                    // Store fixtures data in the map for the league ID
+//                        fixturesMap.value[leagueId] = it.data
+                }
+                is ApiResponse.Error -> {
+                    _fixtures.value = fixtures.value.copy(
+                        loading = false,
+                        error = it.message ?: "An Expected Error Occurred!"
+                    )
+                }
+            }
+            //        }
         }
     }
 

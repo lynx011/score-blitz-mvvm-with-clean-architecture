@@ -1,11 +1,9 @@
 package com.lynx.scoreblitz.data.data_sources.api_service
 
-import androidx.lifecycle.LiveData
-import com.lynx.scoreblitz.data.data_sources.dto.FixtureResultDTO
 import com.lynx.scoreblitz.data.data_sources.dto.FixturesDTO
 import com.lynx.scoreblitz.data.data_sources.dto.H2HDTO
 import com.lynx.scoreblitz.data.data_sources.dto.LeaguesDTO
-import com.lynx.scoreblitz.utils.ApiResponse
+import com.lynx.scoreblitz.data.data_sources.dto.StandingsDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -29,4 +27,11 @@ interface ScoreApiService {
         @Query("secondTeamId") secondTeamId: Int,
         @Query("APIkey") apiKey: String
     ) : H2HDTO
+
+    @GET("football")
+    suspend fun getStandings(
+        @Query("met") met: String,
+        @Query("leagueId") leagueId: Int,
+        @Query("APIkey") apiKey: String
+    ) : StandingsDTO
 }

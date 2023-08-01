@@ -1,10 +1,5 @@
 package com.lynx.scoreblitz.domain.model
 
-import com.lynx.scoreblitz.data.data_sources.dto.FirstTeamResult
-import com.lynx.scoreblitz.data.data_sources.dto.H2H
-import com.lynx.scoreblitz.data.data_sources.dto.H2HResult
-import com.lynx.scoreblitz.data.data_sources.dto.SecondTeamResult
-
 data class H2HResponse(
     val H2H: List<H2HModel?>?,
     val firstTeamResults: List<FirstTeamH2H?>?,

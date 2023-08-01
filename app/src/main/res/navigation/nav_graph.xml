@@ -16,12 +16,12 @@
         android:label="fragment_fixture_details"
         tools:layout="@layout/fragment_fixture_details" />
     <fragment
-        android:id="@+id/h2HFragment"
+        android:id="@+id/nav_h2h"
         android:name="com.lynx.scoreblitz.presentation.screens.fixture_detail.H2HFragment"
         android:label="fragment_h2_h"
         tools:layout="@layout/fragment_h2_h" />
     <fragment
-        android:id="@+id/statsFragment"
+        android:id="@+id/nav_stats"
         android:name="com.lynx.scoreblitz.presentation.screens.fixture_detail.StatsFragment"
         android:label="fragment_stats"
         tools:layout="@layout/fragment_stats" />
@@ -35,4 +35,9 @@
         android:name="com.lynx.scoreblitz.presentation.screens.WatchFragment"
         android:label="fragment_watch"
         tools:layout="@layout/fragment_watch" />
+    <fragment
+        android:id="@+id/nav_standings"
+        android:name="com.lynx.scoreblitz.presentation.screens.fixture_detail.StandingsFragment"
+        android:label="fragment_standings"
+        tools:layout="@layout/fragment_standings" />
 </navigation>

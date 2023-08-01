@@ -47,6 +47,7 @@ class FixtureDetailsFragment : Fragment() {
         setupViewPager(binding.tabLayout)
         setupViewPager(binding.toolTabLayout)
         detailViewModel.getH2H(dashboardViewModel.selectedFixture.value?.home_team_key,dashboardViewModel.selectedFixture.value?.away_team_key)
+        detailViewModel.getStandings(dashboardViewModel.selectedFixture.value?.league_key)
         toolbarVisibility()
         binding.backKey.setOnClickListener {
             navigateUp()
@@ -78,17 +79,21 @@ class FixtureDetailsFragment : Fragment() {
     private fun setupViewPager(tab: TabLayout) {
         val pagerAdapter = object : FragmentStateAdapter(parentFragmentManager, lifecycle) {
             override fun getItemCount(): Int {
-                return 2
+                return 3
             }
 
             override fun createFragment(position: Int): Fragment {
-                return if (position == 0) H2HFragment()
-                else StatsFragment()
+                return when (position) {
+                    0 -> H2HFragment()
+                    1 -> StandingsFragment()
+                    else -> StatsFragment()
+                }
             }
 
         }
 
         tab.addTab(tab.newTab().setText("H2H"))
+        tab.addTab(tab.newTab().setText("Table"))
         tab.addTab(tab.newTab().setText("Stats"))
         viewPager2 = binding.viewPager2
 

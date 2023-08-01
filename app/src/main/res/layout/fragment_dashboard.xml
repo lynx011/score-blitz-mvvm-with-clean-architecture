@@ -144,12 +144,12 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/fixtureRec"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    tools:listitem="@layout/fixture_item" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/fixtureRec"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        tools:listitem="@layout/fixture_item" />
                     <com.airbnb.lottie.LottieAnimationView
                         android:id="@+id/notFoundFixtures"
                         android:layout_width="140dp"

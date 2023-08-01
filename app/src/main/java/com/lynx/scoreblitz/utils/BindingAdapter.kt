@@ -81,3 +81,8 @@ fun showHideDate(view: TextView,ftResult: String?,eventDate: String?){
     view.text = if (ftResult.isNullOrEmpty()) event else "FullTime"
 }
 
+@BindingAdapter("standingString")
+fun standingString(view: TextView, result: Int?){
+    view.text = result?.toString() ?: "0"
+}
+
