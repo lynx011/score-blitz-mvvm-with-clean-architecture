@@ -34,11 +34,12 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
 
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private val defaultDate = dateFormat.format(Date().time).toString()
+    private val defaultStartDate = dateFormat.format(Date().time - 604800000L)
+    private val defaultEndDate = dateFormat.format(Date().time + 604800000L)
 
-    val startDate = MutableLiveData(defaultDate)
+    val startDate = MutableLiveData(defaultStartDate)
 
-    val endDate = MutableLiveData(defaultDate)
+    val endDate = MutableLiveData(defaultEndDate)
 
     val leagueLiveData = MutableLiveData<List<Leagues?>?>()
 
@@ -51,9 +52,6 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
     val selectedLeaguePosition = MutableLiveData<Int?>()
 
     val selectedFixture = MutableLiveData<FixtureResult?>()
-
-    val defaultStartDate = MutableLiveData<String?>()
-    val defaultEndDate = MutableLiveData<String?>()
 
     val key = MutableLiveData<Int?>()
 

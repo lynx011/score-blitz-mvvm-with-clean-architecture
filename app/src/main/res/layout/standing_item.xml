@@ -21,9 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <View
-                android:id="@+id/view"
-                android:layout_width="6dp"
-                android:layout_height="match_parent"
+                android:id="@+id/viewType"
+                android:layout_width="3dp"
+                android:layout_height="60dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:layout_marginHorizontal="12dp"
-                app:layout_constraintStart_toEndOf="@+id/view"
+                app:layout_constraintStart_toEndOf="@+id/viewType"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:orientation="horizontal">
@@ -44,6 +44,7 @@
                     android:textSize="14sp"
                     android:textColor="@color/grey5"/>
                 <ImageView
+                    android:id="@+id/imgView"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginHorizontal="14dp"
@@ -61,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="end|center_vertical"
                 android:orientation="horizontal"
-                android:layout_marginHorizontal="12dp"
+                android:layout_marginHorizontal="6dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -71,13 +72,13 @@
                     tools:text="1"
                     app:standingString="@{standing.standing_P}"
                     android:textSize="14sp"
-                    android:layout_marginEnd="16dp"
                     android:textColor="@color/grey5"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="1"
                     app:standingString="@{standing.standing_W}"
+                    android:paddingHorizontal="16dp"
                     android:textSize="14sp"
                     android:textColor="@color/grey5"/>
                 <TextView
@@ -86,13 +87,13 @@
                     tools:text="1"
                     app:standingString="@{standing.standing_D}"
                     android:textSize="14sp"
-                    android:layout_marginHorizontal="16dp"
                     android:textColor="@color/grey5"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="1"
                     app:standingString="@{standing.standing_L}"
+                    android:paddingHorizontal="16dp"
                     android:textSize="14sp"
                     android:textColor="@color/grey5"/>
                 <TextView
@@ -101,13 +102,13 @@
                     tools:text="1"
                     app:standingString="@{standing.standing_GD}"
                     android:textSize="14sp"
-                    android:layout_marginHorizontal="16dp"
                     android:textColor="@color/grey5"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="1"
                     app:standingString="@{standing.standing_PTS}"
+                    android:paddingHorizontal="16dp"
                     android:textSize="14sp"
                     android:textColor="@color/grey5"/>
             </LinearLayout>

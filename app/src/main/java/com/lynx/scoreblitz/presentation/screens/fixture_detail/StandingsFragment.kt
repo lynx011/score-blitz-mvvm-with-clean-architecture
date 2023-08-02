@@ -43,7 +43,7 @@ class StandingsFragment : Fragment() {
     private fun setupRec() {
         binding.standingRec.apply {
             layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
-            standingsAdapter = StandingsAdapter()
+            standingsAdapter = StandingsAdapter(dashboardViewModel)
             adapter = standingsAdapter
         }
     }
@@ -56,11 +56,17 @@ class StandingsFragment : Fragment() {
 
                     }
                     !it.standings?.total.isNullOrEmpty() -> {
+                        binding.standingsCard.visibility = View.VISIBLE
+                        binding.standingRec.visibility = View.VISIBLE
                         detailViewModel.standingTotal.value = it.standings?.total
                         if (it.standings?.total != null) {
                             binding.notFoundH2H.visibility = View.GONE
                             standingsAdapter.differ.submitList(it.standings.total)
                         } else binding.notFoundH2H.visibility = View.VISIBLE
+                    }
+                    it.standings?.total.isNullOrEmpty() -> {
+                        binding.standingsCard.visibility = View.GONE
+                        binding.standingRec.visibility = View.GONE
                     }
                 }
             }
