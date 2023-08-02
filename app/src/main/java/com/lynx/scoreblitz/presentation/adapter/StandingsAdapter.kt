@@ -54,14 +54,6 @@ class StandingsAdapter(private val viewModel: DashboardViewModel) :
         val championLeague = "Promotion - Champions League (Group Stage: )"
         val europaLeague = "Promotion - Europa League (Group Stage: )"
         val championShip = "Relegation - Championship"
-        if (standing.standing_place_type.toString().startsWith("Promotion - Champions League")) {
-            holder.binding.viewType.setBackgroundColor(
-                ContextCompat.getColor(
-                    holder.itemView.context,
-                    R.color.green_1
-                )
-            )
-        }
         when (standing.standing_place_type.toString()) {
             championLeague -> holder.binding.viewType.setBackgroundColor(
                 ContextCompat.getColor(
@@ -73,7 +65,7 @@ class StandingsAdapter(private val viewModel: DashboardViewModel) :
             europaLeague -> holder.binding.viewType.setBackgroundColor(
                 ContextCompat.getColor(
                     holder.itemView.context,
-                    R.color.dark_blue
+                    R.color.blue
                 )
             )
 

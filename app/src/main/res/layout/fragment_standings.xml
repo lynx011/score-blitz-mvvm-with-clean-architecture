@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/main_bg"
         android:orientation="vertical">
         <FrameLayout
@@ -19,7 +19,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="70dp"
                 app:cardBackgroundColor="@color/black_glass2"
                 android:outlineAmbientShadowColor="@color/main_bg"
                 android:outlineSpotShadowColor="@color/main_bg"
@@ -136,6 +135,79 @@
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/not_found_tag" />
         </FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="76dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/green_1"
+                    android:background="@drawable/circle_view"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Champions League"
+                    android:layout_gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/grey5"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:orientation="horizontal">
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/blue"
+                    android:background="@drawable/circle_view"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Europa League"
+                    android:layout_gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/grey5"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginHorizontal="12dp"
+                android:orientation="horizontal">
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/red"
+                    android:background="@drawable/circle_view"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Relegation"
+                    android:layout_gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/grey5"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </layout>
