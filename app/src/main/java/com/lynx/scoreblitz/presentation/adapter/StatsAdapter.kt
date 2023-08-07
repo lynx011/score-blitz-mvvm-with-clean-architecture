@@ -1,5 +1,6 @@
 package com.lynx.scoreblitz.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ProgressBar
@@ -59,6 +60,7 @@ class StatsAdapter(private val clickOnStats: ((Statistic) -> Unit)? = null) :
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: StatsViewHolder, position: Int) {
         val stats = differ.currentList[position]
         stats?.let(holder::bind)

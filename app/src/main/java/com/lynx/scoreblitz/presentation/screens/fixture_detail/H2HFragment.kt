@@ -19,7 +19,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class H2HFragment : Fragment() {
-    private lateinit var binding: FragmentH2HBinding
+    private var _binding: FragmentH2HBinding? = null
+    private val binding get() = _binding!!
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private val detailViewModel: FixtureDetailsViewModel by activityViewModels()
     private lateinit var h2hAdapter: H2hAdapter
@@ -28,7 +29,7 @@ class H2HFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentH2HBinding.inflate(inflater, container, false)
+        _binding = FragmentH2HBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -62,5 +63,9 @@ class H2HFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
 }

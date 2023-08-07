@@ -13,6 +13,7 @@ import com.lynx.scoreblitz.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -34,8 +35,8 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
 
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private val defaultStartDate = dateFormat.format(Date().time - 604800000L)
-    private val defaultEndDate = dateFormat.format(Date().time + 604800000L)
+    private var defaultStartDate = dateFormat.format(Date().time - 604800000L)
+    private var defaultEndDate = dateFormat.format(Date().time + 604800000L)
 
     val startDate = MutableLiveData(defaultStartDate)
 
@@ -106,7 +107,6 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
                         loading = false,
                         fixtures = fixturesData
                     )
-                    // Store fixtures data in the map for the league ID
 //                        fixturesMap.value[leagueId] = it.data
                 }
                 is ApiResponse.Error -> {
@@ -129,10 +129,13 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
         selectedLeagueKey.value = null
         selectedFixture.value = null
         key.value = null
-        startDate.value = ""
-        endDate.value = ""
+        defaultStartDate = null
+        defaultEndDate = null
+        startDate.value = null
+        endDate.value = null
         leagueLiveData.value = emptyList()
         fixtureLiveData.value = emptyList()
+        scope.cancel()
 //        _actions.resetReplayCache()
     }
 

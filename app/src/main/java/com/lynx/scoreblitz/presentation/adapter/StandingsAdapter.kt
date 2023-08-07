@@ -41,7 +41,7 @@ class StandingsAdapter(private val viewModel: DashboardViewModel) :
 
     override fun onBindViewHolder(holder: StandingsAdapter.StandingsViewHolder, position: Int) {
         val standing = differ.currentList[position]
-        standing?.let { holder.bind(it) }
+        standing?.let(holder::bind)
         val filteredKey =
             viewModel.fixtureLiveData.value?.find { it?.home_team_key == standing.team_key || it?.away_team_key == standing.team_key }
         if (filteredKey != null) {

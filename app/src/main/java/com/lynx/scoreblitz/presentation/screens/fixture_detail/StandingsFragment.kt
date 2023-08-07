@@ -7,19 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.lynx.scoreblitz.R
 import com.lynx.scoreblitz.databinding.FragmentStandingsBinding
 import com.lynx.scoreblitz.presentation.adapter.StandingsAdapter
 import com.lynx.scoreblitz.presentation.view_models.DashboardViewModel
 import com.lynx.scoreblitz.presentation.view_models.FixtureDetailsViewModel
-import com.lynx.scoreblitz.utils.collectLatest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class StandingsFragment : Fragment() {
-    private lateinit var binding: FragmentStandingsBinding
+    private var _binding: FragmentStandingsBinding? = null
+    private val binding get() = _binding!!
     private val detailViewModel: FixtureDetailsViewModel by activityViewModels()
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private lateinit var standingsAdapter: StandingsAdapter
@@ -30,7 +29,7 @@ class StandingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentStandingsBinding.inflate(inflater,container,false)
+        _binding = FragmentStandingsBinding.inflate(inflater,container,false)
         return binding.root
     }
 
@@ -71,5 +70,10 @@ class StandingsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

@@ -15,7 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class StatsFragment : Fragment() {
-    private lateinit var binding: FragmentStatsBinding
+    private var _binding: FragmentStatsBinding? = null
+    private val binding get() = _binding!!
     private lateinit var statsAdapter: StatsAdapter
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private val detailViewModel: FixtureDetailsViewModel by activityViewModels()
@@ -24,7 +25,7 @@ class StatsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentStatsBinding.inflate(inflater, container, false)
+        _binding = FragmentStatsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -55,5 +56,10 @@ class StatsFragment : Fragment() {
                 if (detailViewModel.stats.value != null) View.VISIBLE else View.GONE
 
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

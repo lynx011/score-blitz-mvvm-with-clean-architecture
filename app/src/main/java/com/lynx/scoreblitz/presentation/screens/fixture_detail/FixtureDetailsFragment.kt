@@ -1,6 +1,7 @@
 package com.lynx.scoreblitz.presentation.screens.fixture_detail
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.transition.TransitionInflater
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -19,10 +20,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class FixtureDetailsFragment : Fragment() {
-    private lateinit var binding: FragmentFixtureDetailsBinding
+    private var _binding: FragmentFixtureDetailsBinding? = null
+    private val binding get() = _binding!!
+
     private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private val detailViewModel: FixtureDetailsViewModel by activityViewModels()
     private lateinit var viewPager2: ViewPager2
+    private lateinit var countDownTimer: CountDownTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +41,7 @@ class FixtureDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFixtureDetailsBinding.inflate(inflater, container, false)
+        _binding = FragmentFixtureDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -120,5 +124,12 @@ class FixtureDetailsFragment : Fragment() {
                 tab.selectTab(tab.getTabAt(position))
             }
         })
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+        detailViewModel.onClear()
     }
 }

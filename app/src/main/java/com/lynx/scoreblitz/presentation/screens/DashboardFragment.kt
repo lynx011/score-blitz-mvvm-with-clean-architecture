@@ -30,7 +30,8 @@ import java.util.Locale
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
-    private lateinit var binding: FragmentDashboardBinding
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: DashboardViewModel by activityViewModels()
     private val detailsViewModel: FixtureDetailsViewModel by activityViewModels()
     private lateinit var leaguesAdapter: LeaguesAdapter
@@ -42,7 +43,7 @@ class DashboardFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -184,11 +185,13 @@ class DashboardFragment : Fragment() {
     private fun observeLeaguesAndFixtures() {
         viewModel.leagueLiveData.observe(viewLifecycleOwner) { leagues ->
             if (viewModel.fixtureLiveData.value == null) {
-                viewModel.getFixtures(
-                    viewModel.selectedLeagueKey.value?:leagues?.get(0)?.league_key!!,
-                    viewModel.startDate.value ?: "2022-01-10",
-                    viewModel.endDate.value ?: "2023-05-10"
-                )
+                (viewModel.selectedLeagueKey.value ?:leagues?.get(0)?.league_key)?.let {
+                    viewModel.getFixtures(
+                        it,
+                        viewModel.startDate.value ?: "2022-01-10",
+                        viewModel.endDate.value ?: "2023-05-10"
+                    )
+                }
                 observeFixtures()
             }
             leaguesAdapter.differ.submitList(leagues ?: emptyList())
@@ -248,6 +251,7 @@ class DashboardFragment : Fragment() {
         binding.leagueShimmer.stopShimmer()
         binding.fixtureShimmer.stopShimmer()
         viewModel.onClear()
+        _binding = null
     }
 
 }

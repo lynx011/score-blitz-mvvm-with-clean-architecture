@@ -77,8 +77,9 @@ fun ftVisibility(view: TextView,fullResult: String?,eventTime: String?){
 
 @BindingAdapter("ftResult","eventDate")
 fun showHideDate(view: TextView,ftResult: String?,eventDate: String?){
-    val event = dateFormat(eventDate)
-    view.text = if (ftResult.isNullOrEmpty()) event else "FullTime"
+//    val event = dateFormat(eventDate)
+//    view.text = if (ftResult.isNullOrEmpty()) event else "FullTime"
+    if (ftResult.isNullOrEmpty()) countDownTimer(eventDate,view) else view.text = "FullTime"
 }
 
 @BindingAdapter("standingString")
