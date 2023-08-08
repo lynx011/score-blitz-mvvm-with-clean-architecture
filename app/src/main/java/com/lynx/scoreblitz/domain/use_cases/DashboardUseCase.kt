@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class DashboardUseCase @Inject constructor(private val repository: ScoreRepository) {
+open class DashboardUseCase @Inject constructor(private val repository: ScoreRepository) {
     suspend operator fun invoke(met: String, apiKey: String) : Flow<ApiResponse<List<Leagues>>> {
         return if (met.isEmpty()){
             flow {  }

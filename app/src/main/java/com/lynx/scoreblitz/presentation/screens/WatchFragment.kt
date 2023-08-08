@@ -29,4 +29,5 @@ class WatchFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
+
 }

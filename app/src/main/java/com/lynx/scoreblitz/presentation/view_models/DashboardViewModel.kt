@@ -58,14 +58,6 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
 
     private val fixturesMap = MutableStateFlow(mutableMapOf<Int,List<FixtureResult?>?>())
 
-//    private var _actions = MutableSharedFlow<ScoreActions>()
-//    val actions : SharedFlow<ScoreActions> = _actions
-//
-//
-//    fun onDashboardNav(){
-//        _actions.emit(viewModelScope){ ScoreActions.OnPickDate }
-//    }
-
     fun getLeagues() = scope.launch(Dispatchers.IO) {
         useCase(met = "Leagues", apiKey = Constants.API_KEY).collectLatest{
             when(it){
