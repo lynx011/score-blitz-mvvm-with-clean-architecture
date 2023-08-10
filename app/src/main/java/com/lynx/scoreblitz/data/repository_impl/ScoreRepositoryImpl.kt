@@ -5,10 +5,8 @@ import com.lynx.scoreblitz.data.remote.api_service.SmApiService
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.H2HResponse
 import com.lynx.scoreblitz.domain.model.Leagues
-import com.lynx.scoreblitz.domain.model.SmModel.SmFixture
-import com.lynx.scoreblitz.domain.model.SmModel.SmFixtures
-import com.lynx.scoreblitz.domain.model.SmModel.SmLeague
-import com.lynx.scoreblitz.domain.model.SmModel.SmLeagues
+import com.lynx.scoreblitz.domain.model.SmModel.SmFixtureList
+import com.lynx.scoreblitz.domain.model.SmModel.SmLeagueList
 import com.lynx.scoreblitz.domain.model.StandingList
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.ApiResponse
@@ -114,10 +112,10 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
         }
     }
 
-    override suspend fun getSmLeagues(leagueId: Int): Flow<ApiResponse<SmLeague?>> = flow {
+    override suspend fun getSmLeagues(leagueId: Int): Flow<ApiResponse<List<SmLeagueList?>?>> = flow {
         try {
             emit(ApiResponse.Loading())
-            val smLeagues = smApiService.getSmLeague(leagueId = leagueId).toSmLeague()
+            val smLeagues = smApiService.getSmLeague(leagueId = leagueId).data.map { it.toSmLeagueList() }
             emit(ApiResponse.Success(smLeagues))
         }catch (e: HttpException) {
             emit(
@@ -130,10 +128,10 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
         }
     }
 
-    override suspend fun getSmFixtures(date: String): Flow<ApiResponse<SmFixture?>> = flow {
+    override suspend fun getSmFixtures(date: String): Flow<ApiResponse<List<SmFixtureList?>?>> = flow {
         try {
             emit(ApiResponse.Loading())
-            val smFixtures = smApiService.getSmFixture(date = date).toSmFixtureList()
+            val smFixtures = smApiService.getSmFixture(date = date).data.map { it.toSmFixtureList() }
             emit(ApiResponse.Success(smFixtures))
         }catch (e: HttpException) {
             emit(

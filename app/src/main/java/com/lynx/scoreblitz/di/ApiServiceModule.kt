@@ -37,7 +37,6 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    @Named("Chucker")
     fun provideChucker(@ApplicationContext context: Context, @Named("Collector") collector: ChuckerCollector) : ChuckerInterceptor = ChuckerInterceptor.Builder(context)
         .collector(collector)
         .maxContentLength(250000L)
@@ -46,8 +45,8 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    @Named("ScoreService")
-    fun provideHttpService(@Named("Chucker") chuckerInterceptor: ChuckerInterceptor): OkHttpClient = OkHttpClient().newBuilder()
+    @Named("ScoreClient")
+    fun provideHttpClient(chuckerInterceptor: ChuckerInterceptor): OkHttpClient = OkHttpClient().newBuilder()
         .addInterceptor { chain ->
             val request = chain.request()
             val newRequest = request.newBuilder()
@@ -62,8 +61,8 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    @Named("SmService")
-    fun provideSmService(@Named("Chucker") chuckerInterceptor: ChuckerInterceptor): OkHttpClient = OkHttpClient().newBuilder()
+    @Named("SmClient")
+    fun provideSmService(): OkHttpClient = OkHttpClient().newBuilder()
         .addInterceptor { chain ->
             val request = chain.request()
             val newRequest = request.newBuilder()
@@ -73,13 +72,15 @@ object ApiServiceModule {
                 .build()
             chain.proceed(newRequest)
         }
-        .addInterceptor(chuckerInterceptor)
+        .connectTimeout(1, TimeUnit.MINUTES)
+        .readTimeout(1, TimeUnit.MINUTES)
+        .writeTimeout(1, TimeUnit.MINUTES)
         .build()
 
     @Provides
     @Singleton
     @Named("SmRetrofit")
-    fun provideSmRetrofit(@Named("SmService") okHttpClient: OkHttpClient): Retrofit =
+    fun provideSmRetrofit(@Named("SmClient") okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(Constants.SM_BASE_URL)
             .client(okHttpClient)
@@ -88,7 +89,8 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(@Named("ScoreService") okHttpClient: OkHttpClient): Retrofit =
+    @Named("ScoreRetrofit")
+    fun provideRetrofit(@Named("ScoreClient") okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .client(okHttpClient)
@@ -97,7 +99,7 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    fun provideScoreApiService(retrofit: Retrofit): ScoreApiService =
+    fun provideScoreApiService(@Named("ScoreRetrofit") retrofit: Retrofit): ScoreApiService =
         retrofit.create(ScoreApiService::class.java)
 
     @Provides

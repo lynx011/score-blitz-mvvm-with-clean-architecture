@@ -1,11 +1,10 @@
 package com.lynx.scoreblitz.domain.model.SmModel
 
-data class SmFixture(
-    val data: List<SmFixtures>,
-    val timezone: String
+data class SmFixtures(
+    val `data`: List<SmFixtureList>
 )
 
-data class SmFixtures(
+data class SmFixtureList(
     val aggregate_id: Any,
     val details: Any,
     val group_id: Any,

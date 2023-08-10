@@ -1,11 +1,10 @@
 package com.lynx.scoreblitz.domain.model.SmModel
 
-data class SmLeague(
-    val `data`: List<SmLeagues>,
-    val timezone: String
+data class SmLeagues(
+    val `data`: List<SmLeagueList>
 )
 
-data class SmLeagues(
+data class SmLeagueList(
     val active: Boolean,
     val category: Int,
     val country_id: Int,

@@ -14,7 +14,6 @@ import com.lynx.scoreblitz.utils.ApiResponse
 import com.lynx.scoreblitz.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -126,13 +125,13 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
                 is ApiResponse.Loading -> {
                     _smLeagues.value = smLeagues.value.copy(
                         loading = true,
-                        smLeagues = it.data?.data?: emptyList()
+                        smLeagues = it.data?: emptyList()
                     )
                 }
                 is ApiResponse.Success -> {
                     _smLeagues.value = smLeagues.value.copy(
                         loading = false,
-                        smLeagues = it.data?.data ?: emptyList()
+                        smLeagues = it.data ?: emptyList()
                     )
                 }
                 is ApiResponse.Error -> {
@@ -151,13 +150,13 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
                 is ApiResponse.Loading -> {
                     _smFixtures.value = smFixtures.value.copy(
                         loading = true,
-                         smFixtures = it.data?.data ?: emptyList()
+                         smFixtures = it.data ?: emptyList()
                     )
                 }
                 is ApiResponse.Success -> {
                     _smFixtures.value = smFixtures.value.copy(
                         loading = false,
-                        smFixtures = it.data?.data ?: emptyList()
+                        smFixtures = it.data ?: emptyList()
                     )
                 }
                 is ApiResponse.Error -> {

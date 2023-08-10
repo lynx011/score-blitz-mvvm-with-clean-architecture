@@ -2,6 +2,7 @@ package com.lynx.scoreblitz.presentation.screens
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,9 +25,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
@@ -57,6 +60,36 @@ class DashboardFragment : Fragment() {
         binding.pickDate.setOnClickListener {
             pickDateRange()
         }
+
+        val publicKey = "a68d616900478af05d4b54596a993646"
+        val privateKey = "b8d6486a25aa7d83ff406e1d5149b36a03a57878"
+        val timestamp = getCurrentTimestamp()
+
+        val md5Hash = generateMarvelAPIHash(publicKey, privateKey, timestamp)
+        Log.d("hashAPI", md5Hash)
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun getCurrentTimestamp(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        return dateFormat.format(Date())
+    }
+
+    private fun generateMarvelAPIHash(publicKey: String, privateKey: String, timestamp: String): String {
+        val input = "$timestamp$privateKey$publicKey"
+        val md = MessageDigest.getInstance("MD5")
+        val digest = md.digest(input.toByteArray())
+
+        val hexString = StringBuilder()
+        for (byte in digest) {
+            val hex = Integer.toHexString(0xFF and byte.toInt())
+            if (hex.length == 1) {
+                hexString.append('0')
+            }
+            hexString.append(hex)
+        }
+        return hexString.toString()
     }
 
     @SuppressLint("SuspiciousIndentation")

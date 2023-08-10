@@ -1,10 +1,9 @@
 package com.lynx.scoreblitz.presentation.states
 
 import com.lynx.scoreblitz.domain.model.FixtureResult
-import com.lynx.scoreblitz.domain.model.H2HResponse
 import com.lynx.scoreblitz.domain.model.Leagues
-import com.lynx.scoreblitz.domain.model.SmModel.SmFixtures
-import com.lynx.scoreblitz.domain.model.SmModel.SmLeagues
+import com.lynx.scoreblitz.domain.model.SmModel.SmFixtureList
+import com.lynx.scoreblitz.domain.model.SmModel.SmLeagueList
 
 data class LeaguesStates(
     val loading: Boolean = false,
@@ -20,13 +19,13 @@ data class FixturesStates(
 
 data class SmLeagueStates(
     val loading: Boolean = false,
-    val smLeagues: List<SmLeagues?>? = emptyList(),
+    val smLeagues: List<SmLeagueList?>? = emptyList(),
     val error: String = ""
 )
 
 data class SmFixtureStates(
     val loading: Boolean = false,
-    val smFixtures: List<SmFixtures?>? = emptyList(),
+    val smFixtures: List<SmFixtureList?>? = emptyList(),
     val error: String = ""
 )
 
