@@ -2,6 +2,10 @@ package com.lynx.scoreblitz.domain.use_cases
 
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.Leagues
+import com.lynx.scoreblitz.domain.model.SmModel.SmFixture
+import com.lynx.scoreblitz.domain.model.SmModel.SmFixtures
+import com.lynx.scoreblitz.domain.model.SmModel.SmLeague
+import com.lynx.scoreblitz.domain.model.SmModel.SmLeagues
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.ApiResponse
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +27,16 @@ open class DashboardUseCase @Inject constructor(private val repository: ScoreRep
         }else{
             repository.getFixtures(met, leagueId, from, to, apiKey)
         }
+    }
+
+    suspend operator fun invoke(leagueId: Int) : Flow<ApiResponse<SmLeague?>>{
+        return if (leagueId.equals(null)) flow { }
+        else repository.getSmLeagues(leagueId = leagueId)
+    }
+
+    suspend operator fun invoke(date: String) : Flow<ApiResponse<SmFixture?>>{
+        return if (date.isEmpty()) flow { }
+        else repository.getSmFixtures(date = date)
     }
 
 }

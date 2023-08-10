@@ -4,7 +4,8 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
-import com.lynx.scoreblitz.data.data_sources.api_service.ScoreApiService
+import com.lynx.scoreblitz.data.remote.api_service.ScoreApiService
+import com.lynx.scoreblitz.data.remote.api_service.SmApiService
 import com.lynx.scoreblitz.data.repository_impl.ScoreRepositoryImpl
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.Constants
@@ -16,6 +17,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -60,6 +62,32 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
+    @Named("SmService")
+    fun provideSmService(@Named("Chucker") chuckerInterceptor: ChuckerInterceptor): OkHttpClient = OkHttpClient().newBuilder()
+        .addInterceptor { chain ->
+            val request = chain.request()
+            val newRequest = request.newBuilder()
+                .addHeader("Authorization",Constants.SM_TOKEN)
+                .addHeader("Content-Type","application/json")
+                .addHeader("Accept","application/json")
+                .build()
+            chain.proceed(newRequest)
+        }
+        .addInterceptor(chuckerInterceptor)
+        .build()
+
+    @Provides
+    @Singleton
+    @Named("SmRetrofit")
+    fun provideSmRetrofit(@Named("SmService") okHttpClient: OkHttpClient): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(Constants.SM_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    @Provides
+    @Singleton
     fun provideRetrofit(@Named("ScoreService") okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
@@ -69,12 +97,17 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    fun provideGameApiService(retrofit: Retrofit): ScoreApiService =
+    fun provideScoreApiService(retrofit: Retrofit): ScoreApiService =
         retrofit.create(ScoreApiService::class.java)
 
     @Provides
     @Singleton
-    fun provideGameRepository(apiService: ScoreApiService): ScoreRepository {
-        return ScoreRepositoryImpl(apiService)
+    fun provideSmApiService(@Named("SmRetrofit") retrofit: Retrofit): SmApiService =
+        retrofit.create(SmApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideGameRepository(apiService: ScoreApiService,smService: SmApiService): ScoreRepository {
+        return ScoreRepositoryImpl(apiService,smService)
     }
 }

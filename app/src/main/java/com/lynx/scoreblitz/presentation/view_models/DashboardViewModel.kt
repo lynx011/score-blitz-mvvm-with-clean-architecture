@@ -8,6 +8,8 @@ import com.lynx.scoreblitz.domain.model.Leagues
 import com.lynx.scoreblitz.domain.use_cases.DashboardUseCase
 import com.lynx.scoreblitz.presentation.states.FixturesStates
 import com.lynx.scoreblitz.presentation.states.LeaguesStates
+import com.lynx.scoreblitz.presentation.states.SmFixtureStates
+import com.lynx.scoreblitz.presentation.states.SmLeagueStates
 import com.lynx.scoreblitz.utils.ApiResponse
 import com.lynx.scoreblitz.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -55,6 +57,12 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
     val selectedFixture = MutableLiveData<FixtureResult?>()
 
     val key = MutableLiveData<Int?>()
+
+    private val _smLeagues = MutableStateFlow(SmLeagueStates())
+    val smLeagues : StateFlow<SmLeagueStates> get() = _smLeagues
+
+    private val _smFixtures = MutableStateFlow(SmFixtureStates())
+    val smFixtures : StateFlow<SmFixtureStates> get() = _smFixtures
 
     private val fixturesMap = MutableStateFlow(mutableMapOf<Int,List<FixtureResult?>?>())
 
@@ -112,7 +120,56 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getSmLeagues(leagueId: Int) = viewModelScope.launch(Dispatchers.IO) {
+        useCase(leagueId = leagueId).collectLatest {
+            when(it) {
+                is ApiResponse.Loading -> {
+                    _smLeagues.value = smLeagues.value.copy(
+                        loading = true,
+                        smLeagues = it.data?.data?: emptyList()
+                    )
+                }
+                is ApiResponse.Success -> {
+                    _smLeagues.value = smLeagues.value.copy(
+                        loading = false,
+                        smLeagues = it.data?.data ?: emptyList()
+                    )
+                }
+                is ApiResponse.Error -> {
+                    _smLeagues.value = smLeagues.value.copy(
+                        loading = false,
+                        error = it.message ?: "An Expected Error Occurred!"
+                    )
+                }
+            }
+        }
+    }
+
+    fun getSmFixtures(date: String) = viewModelScope.launch(Dispatchers.IO) {
+        useCase(date = date).collectLatest {
+            when(it) {
+                is ApiResponse.Loading -> {
+                    _smFixtures.value = smFixtures.value.copy(
+                        loading = true,
+                         smFixtures = it.data?.data ?: emptyList()
+                    )
+                }
+                is ApiResponse.Success -> {
+                    _smFixtures.value = smFixtures.value.copy(
+                        loading = false,
+                        smFixtures = it.data?.data ?: emptyList()
+                    )
+                }
+                is ApiResponse.Error -> {
+                    _smFixtures.value = smFixtures.value.copy(
+                        loading = false,
+                        error = it.message ?: "An Expected Error Occurred!"
+                    )
+                }
+            }
+        }
+    }
+
     fun onClear(){
         _leagues.value = LeaguesStates(false, emptyList(),"")
         _fixtures.value = FixturesStates(false, emptyList(), "")

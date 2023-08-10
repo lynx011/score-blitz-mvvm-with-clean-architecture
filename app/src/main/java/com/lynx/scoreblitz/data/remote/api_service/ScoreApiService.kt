@@ -1,17 +1,18 @@
-package com.lynx.scoreblitz.data.data_sources.api_service
+package com.lynx.scoreblitz.data.remote.api_service
 
-import com.lynx.scoreblitz.data.data_sources.dto.FixturesDTO
-import com.lynx.scoreblitz.data.data_sources.dto.H2HDTO
-import com.lynx.scoreblitz.data.data_sources.dto.LeaguesDTO
-import com.lynx.scoreblitz.data.data_sources.dto.StandingsDTO
+import com.lynx.scoreblitz.data.remote.dto.FixturesDTO
+import com.lynx.scoreblitz.data.remote.dto.H2HDTO
+import com.lynx.scoreblitz.data.remote.dto.LeaguesDTO
+import com.lynx.scoreblitz.data.remote.dto.StandingsDTO
+import com.lynx.scoreblitz.utils.Constants
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ScoreApiService {
-    @GET("football")
+    @GET(Constants.FOOTBALL)
     suspend fun getLeagues(@Query("met") met: String, @Query("APIkey") apiKey: String): LeaguesDTO
 
-    @GET("football")
+    @GET(Constants.FOOTBALL)
     suspend fun getFixtures(
         @Query("met") met: String,
         @Query("leagueId") leagueId: Int,
@@ -20,7 +21,7 @@ interface ScoreApiService {
         @Query("APIkey") apiKey: String
     ) : FixturesDTO?
 
-    @GET("football")
+    @GET(Constants.FOOTBALL)
     suspend fun getH2H(
         @Query("met") met: String,
         @Query("firstTeamId") firstTeamId: Int,
@@ -28,10 +29,11 @@ interface ScoreApiService {
         @Query("APIkey") apiKey: String
     ) : H2HDTO
 
-    @GET("football")
+    @GET(Constants.FOOTBALL)
     suspend fun getStandings(
         @Query("met") met: String,
         @Query("leagueId") leagueId: Int,
         @Query("APIkey") apiKey: String
     ) : StandingsDTO
+
 }

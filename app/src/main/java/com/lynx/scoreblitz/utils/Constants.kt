@@ -7,4 +7,10 @@ object Constants {
     const val API_KEY = "61bc6a41449af1699447879e22a8b79371103522aab1c983a8641b198b45039d"
 
     const val BASE_URL = "https://apiv2.allsportsapi.com/"
+
+    const val FOOTBALL = "football"
+
+    const val SM_BASE_URL = "https://api.sportmonks.com/v3/football/"
+
+    const val SM_TOKEN = "ijwKpur7v5xEqmYdt45YEuNWGMCWp19SOTcHxI8BBTkATiH2jUXzUeGJDblO"
 }

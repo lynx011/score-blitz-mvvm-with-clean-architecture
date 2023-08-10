@@ -1,7 +1,5 @@
 package com.lynx.scoreblitz.domain.model
 
-import com.lynx.scoreblitz.data.data_sources.dto.FixtureResultDTO
-
 data class FixtureResult(
     val away_team_key: Int?,
     val away_team_logo: String?,

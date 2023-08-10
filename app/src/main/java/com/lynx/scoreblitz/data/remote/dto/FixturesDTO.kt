@@ -1,4 +1,4 @@
-package com.lynx.scoreblitz.data.data_sources.dto
+package com.lynx.scoreblitz.data.remote.dto
 
 import com.lynx.scoreblitz.domain.model.AwayScorer
 import com.lynx.scoreblitz.domain.model.AwayTeam
