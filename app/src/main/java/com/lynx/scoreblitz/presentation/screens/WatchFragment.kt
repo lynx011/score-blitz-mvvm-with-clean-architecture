@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 class WatchFragment : Fragment() {
     private var _binding: FragmentWatchBinding? = null
     private val binding get() = _binding!!
-    private val dashViewModel: DashboardViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,19 +30,6 @@ class WatchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dashViewModel.getSmLeagues(2)
-        CoroutineScope(Dispatchers.Main).launch {
-            dashViewModel.smLeagues.collectLatest(viewLifecycleOwner){
-                when{
-                    !it.smLeagues.isNullOrEmpty() -> {
-                        Log.d("sm_leagues",it.smLeagues.toString())
-                    }
-                    it.error.isNotEmpty() -> {
-                        Log.d("sm_leagues",it.error)
-                    }
-                }
-            }
-        }
     }
 
     override fun onDestroy() {

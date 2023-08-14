@@ -2,6 +2,7 @@ package com.lynx.scoreblitz.presentation.screens
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ class DashboardFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: DashboardViewModel by activityViewModels()
     private val detailsViewModel: FixtureDetailsViewModel by activityViewModels()
+    private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private lateinit var leaguesAdapter: LeaguesAdapter
     private lateinit var fixturesAdapter: FixturesAdapter
 
@@ -53,10 +55,10 @@ class DashboardFragment : Fragment() {
         observeLeaguesAndFixtures()
         initViewModel()
         swipeToRefresh()
-
         binding.pickDate.setOnClickListener {
             pickDateRange()
         }
+        observeScores()
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -234,6 +236,23 @@ class DashboardFragment : Fragment() {
             binding.refreshLayout.isRefreshing = false
         }
         picker.isCancelable = true
+    }
+
+    private fun observeScores(){
+        dashboardViewModel.getScores()
+        coroutineScope.launch {
+            dashboardViewModel.scores.collectLatest {
+                when {
+                    it.loading -> {}
+                    !it.scores.isNullOrEmpty() -> {
+                        Log.d("scores",it.scores.toString())
+                    }
+                    it.error.isNotEmpty() -> {
+                        toast(it.error)
+                    }
+                }
+            }
+        }
     }
 
     private fun swipeToRefresh() {

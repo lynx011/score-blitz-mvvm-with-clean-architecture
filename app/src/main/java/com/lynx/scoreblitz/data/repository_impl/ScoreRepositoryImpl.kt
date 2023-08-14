@@ -1,15 +1,12 @@
 package com.lynx.scoreblitz.data.repository_impl
 
 import com.lynx.scoreblitz.data.remote.api_service.ScoreApiService
-import com.lynx.scoreblitz.data.remote.api_service.SmApiService
+import com.lynx.scoreblitz.data.remote.api_service.ScoreService
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.H2HResponse
 import com.lynx.scoreblitz.domain.model.Leagues
-import com.lynx.scoreblitz.domain.model.SmModel.SmFixture
-import com.lynx.scoreblitz.domain.model.SmModel.SmFixtures
-import com.lynx.scoreblitz.domain.model.SmModel.SmLeague
-import com.lynx.scoreblitz.domain.model.SmModel.SmLeagues
 import com.lynx.scoreblitz.domain.model.StandingList
+import com.lynx.scoreblitz.domain.model.blitz_model.FixtureData
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.ApiResponse
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +15,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiService, private val smApiService: SmApiService) :
+class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiService, private val scoreService: ScoreService) :
     ScoreRepository {
     override suspend fun getLeagues(met: String, apiKey: String): Flow<ApiResponse<List<Leagues>>> =
         flow {
@@ -114,35 +111,33 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
         }
     }
 
-    override suspend fun getSmLeagues(leagueId: Int): Flow<ApiResponse<SmLeague?>> = flow {
+    override suspend fun getScores(
+        date: String,
+        include: String,
+        filter: String,
+        page: Int
+    ): Flow<ApiResponse<List<FixtureData?>?>> = flow {
         try {
             emit(ApiResponse.Loading())
-            val smLeagues = smApiService.getSmLeague(leagueId = leagueId).toSmLeague()
-            emit(ApiResponse.Success(smLeagues))
-        }catch (e: HttpException) {
+            val scores = scoreService.getScores(
+                date = date,
+                include = include,
+                filter = filter,
+                page = page
+            ).data?.map { it?.toFixtureData() }
+            emit(ApiResponse.Success(scores))
+        } catch (e: HttpException) {
             emit(
                 ApiResponse.Error(
                     e.localizedMessage ?: "HttpException-Unexpected Error Occurred!"
                 )
             )
         } catch (e: IOException) {
-            emit(ApiResponse.Error(e.localizedMessage ?: "IOException-Unexpected Error Occurred!"))
-        }
-    }
-
-    override suspend fun getSmFixtures(date: String): Flow<ApiResponse<SmFixture?>> = flow {
-        try {
-            emit(ApiResponse.Loading())
-            val smFixtures = smApiService.getSmFixture(date = date).toSmFixtureList()
-            emit(ApiResponse.Success(smFixtures))
-        }catch (e: HttpException) {
             emit(
                 ApiResponse.Error(
-                    e.localizedMessage ?: "HttpException-Unexpected Error Occurred!"
+                    e.localizedMessage ?: "IOException-Unexpected Error Occurred!"
                 )
             )
-        } catch (e: IOException) {
-            emit(ApiResponse.Error(e.localizedMessage ?: "IOException-Unexpected Error Occurred!"))
         }
     }
 

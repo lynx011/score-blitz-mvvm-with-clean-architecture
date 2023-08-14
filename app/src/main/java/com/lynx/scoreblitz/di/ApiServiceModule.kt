@@ -5,7 +5,7 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.lynx.scoreblitz.data.remote.api_service.ScoreApiService
-import com.lynx.scoreblitz.data.remote.api_service.SmApiService
+import com.lynx.scoreblitz.data.remote.api_service.ScoreService
 import com.lynx.scoreblitz.data.repository_impl.ScoreRepositoryImpl
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.Constants
@@ -88,6 +88,7 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
+    @Named("ScoreRetrofit")
     fun provideRetrofit(@Named("ScoreService") okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
@@ -97,17 +98,17 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    fun provideScoreApiService(retrofit: Retrofit): ScoreApiService =
+    fun provideScoreApiService(@Named("ScoreRetrofit") retrofit: Retrofit): ScoreApiService =
         retrofit.create(ScoreApiService::class.java)
 
     @Provides
     @Singleton
-    fun provideSmApiService(@Named("SmRetrofit") retrofit: Retrofit): SmApiService =
-        retrofit.create(SmApiService::class.java)
+    fun provideScoreService(@Named("SmRetrofit") retrofit: Retrofit): ScoreService =
+        retrofit.create(ScoreService::class.java)
 
     @Provides
     @Singleton
-    fun provideGameRepository(apiService: ScoreApiService,smService: SmApiService): ScoreRepository {
-        return ScoreRepositoryImpl(apiService,smService)
+    fun provideGameRepository(apiService: ScoreApiService, scoreService: ScoreService): ScoreRepository {
+        return ScoreRepositoryImpl(apiService = apiService, scoreService = scoreService)
     }
 }
