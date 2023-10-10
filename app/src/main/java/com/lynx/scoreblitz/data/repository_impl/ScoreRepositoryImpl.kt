@@ -1,12 +1,10 @@
 package com.lynx.scoreblitz.data.repository_impl
 
 import com.lynx.scoreblitz.data.remote.api_service.ScoreApiService
-import com.lynx.scoreblitz.data.remote.api_service.ScoreService
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.H2HResponse
 import com.lynx.scoreblitz.domain.model.Leagues
 import com.lynx.scoreblitz.domain.model.StandingList
-import com.lynx.scoreblitz.domain.model.blitz_model.FixtureData
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.ApiResponse
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +13,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiService, private val scoreService: ScoreService) :
+class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiService) :
     ScoreRepository {
     override suspend fun getLeagues(met: String, apiKey: String): Flow<ApiResponse<List<Leagues>>> =
         flow {
@@ -108,36 +106,6 @@ class ScoreRepositoryImpl @Inject constructor(private val apiService: ScoreApiSe
             )
         } catch (e: IOException) {
             emit(ApiResponse.Error(e.localizedMessage ?: "IOException-Unexpected Error Occurred!"))
-        }
-    }
-
-    override suspend fun getScores(
-        date: String,
-        include: String,
-        filter: String,
-        page: Int
-    ): Flow<ApiResponse<List<FixtureData?>?>> = flow {
-        try {
-            emit(ApiResponse.Loading())
-            val scores = scoreService.getScores(
-                date = date,
-                include = include,
-                filter = filter,
-                page = page
-            ).data?.map { it?.toFixtureData() }
-            emit(ApiResponse.Success(scores))
-        } catch (e: HttpException) {
-            emit(
-                ApiResponse.Error(
-                    e.localizedMessage ?: "HttpException-Unexpected Error Occurred!"
-                )
-            )
-        } catch (e: IOException) {
-            emit(
-                ApiResponse.Error(
-                    e.localizedMessage ?: "IOException-Unexpected Error Occurred!"
-                )
-            )
         }
     }
 

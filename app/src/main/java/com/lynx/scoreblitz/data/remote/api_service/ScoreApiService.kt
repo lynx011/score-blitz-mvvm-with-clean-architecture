@@ -4,10 +4,8 @@ import com.lynx.scoreblitz.data.remote.dto.FixturesDTO
 import com.lynx.scoreblitz.data.remote.dto.H2HDTO
 import com.lynx.scoreblitz.data.remote.dto.LeaguesDTO
 import com.lynx.scoreblitz.data.remote.dto.StandingsDTO
-import com.lynx.scoreblitz.data.remote.dto.blitz_dto.FixtureDTO
 import com.lynx.scoreblitz.utils.Constants
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ScoreApiService {

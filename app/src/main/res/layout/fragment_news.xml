@@ -10,9 +10,11 @@
         android:background="@color/main_bg"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/ref"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="News Fragment"/>
+            android:textSize="22sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </layout>

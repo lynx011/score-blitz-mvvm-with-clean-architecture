@@ -2,7 +2,6 @@ package com.lynx.scoreblitz.domain.use_cases
 
 import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.Leagues
-import com.lynx.scoreblitz.domain.model.blitz_model.FixtureData
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.ApiResponse
 import kotlinx.coroutines.flow.Flow
@@ -23,14 +22,6 @@ open class DashboardUseCase @Inject constructor(private val repository: ScoreRep
             flow {  }
         }else{
             repository.getFixtures(met, leagueId, from, to, apiKey)
-        }
-    }
-
-    suspend operator fun invoke(date: String, include: String, filter: String, page: Int) : Flow<ApiResponse<List<FixtureData?>?>>{
-        return if (date.isEmpty() && include.isEmpty() && filter.isEmpty() && page.equals(null)) {
-            flow {  }
-        } else{
-            repository.getScores(date = date, include = include, filter = filter, page = page)
         }
     }
 

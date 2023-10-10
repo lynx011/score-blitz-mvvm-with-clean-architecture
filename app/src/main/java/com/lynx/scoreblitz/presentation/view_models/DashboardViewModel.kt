@@ -8,7 +8,6 @@ import com.lynx.scoreblitz.domain.model.Leagues
 import com.lynx.scoreblitz.domain.use_cases.DashboardUseCase
 import com.lynx.scoreblitz.presentation.states.FixturesStates
 import com.lynx.scoreblitz.presentation.states.LeaguesStates
-import com.lynx.scoreblitz.presentation.states.ScoreStates
 import com.lynx.scoreblitz.utils.ApiResponse
 import com.lynx.scoreblitz.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,11 +55,6 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
 
     val key = MutableLiveData<Int?>()
 
-    private val _scores = MutableStateFlow(ScoreStates())
-    val scores: StateFlow<ScoreStates> get() = _scores
-
-    val market = 6
-    val bookmaker = 2
 
     private val fixturesMap = MutableStateFlow(mutableMapOf<Int, List<FixtureResult?>?>())
 
@@ -129,37 +123,37 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
             }
         }
 
-    fun getScores() = viewModelScope.launch(Dispatchers.IO) {
-        useCase(
-            date = SCORE.DATE.value,
-            include = SCORE.INCLUDE.value,
-            filter = SCORE.FILTER.value,
-            page = 5
-        ).collectLatest {
-            when (it) {
-                is ApiResponse.Loading -> {
-                    _scores.value = scores.value.copy(
-                        loading = true,
-                        scores = it.data ?: emptyList()
-                    )
-                }
-
-                is ApiResponse.Success -> {
-                    _scores.value = scores.value.copy(
-                        loading = false,
-                        scores = it.data ?: emptyList()
-                    )
-                }
-
-                is ApiResponse.Error -> {
-                    _scores.value = scores.value.copy(
-                        loading = false,
-                        error = it.message ?: "An Expected Error Occurred!"
-                    )
-                }
-            }
-        }
-    }
+//    fun getScores() = viewModelScope.launch(Dispatchers.IO) {
+//        useCase(
+//            date = SCORE.DATE.value,
+//            include = SCORE.INCLUDE.value,
+//            filter = SCORE.FILTER.value,
+//            page = 5
+//        ).collectLatest {
+//            when (it) {
+//                is ApiResponse.Loading -> {
+//                    _scores.value = scores.value.copy(
+//                        loading = true,
+//                        scores = it.data ?: emptyList()
+//                    )
+//                }
+//
+//                is ApiResponse.Success -> {
+//                    _scores.value = scores.value.copy(
+//                        loading = false,
+//                        scores = it.data ?: emptyList()
+//                    )
+//                }
+//
+//                is ApiResponse.Error -> {
+//                    _scores.value = scores.value.copy(
+//                        loading = false,
+//                        error = it.message ?: "An Expected Error Occurred!"
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     fun onClear() {
         _leagues.value = LeaguesStates(false, emptyList(), "")

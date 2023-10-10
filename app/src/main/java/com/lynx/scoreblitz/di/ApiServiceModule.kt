@@ -5,7 +5,6 @@ import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.chuckerteam.chucker.api.RetentionManager
 import com.lynx.scoreblitz.data.remote.api_service.ScoreApiService
-import com.lynx.scoreblitz.data.remote.api_service.ScoreService
 import com.lynx.scoreblitz.data.repository_impl.ScoreRepositoryImpl
 import com.lynx.scoreblitz.domain.repository.ScoreRepository
 import com.lynx.scoreblitz.utils.Constants
@@ -17,7 +16,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -62,32 +60,6 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    @Named("SmService")
-    fun provideSmService(@Named("Chucker") chuckerInterceptor: ChuckerInterceptor): OkHttpClient = OkHttpClient().newBuilder()
-        .addInterceptor { chain ->
-            val request = chain.request()
-            val newRequest = request.newBuilder()
-                .addHeader("Authorization",Constants.SM_TOKEN)
-                .addHeader("Content-Type","application/json")
-                .addHeader("Accept","application/json")
-                .build()
-            chain.proceed(newRequest)
-        }
-        .addInterceptor(chuckerInterceptor)
-        .build()
-
-    @Provides
-    @Singleton
-    @Named("SmRetrofit")
-    fun provideSmRetrofit(@Named("SmService") okHttpClient: OkHttpClient): Retrofit =
-        Retrofit.Builder()
-            .baseUrl(Constants.SM_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-    @Provides
-    @Singleton
     @Named("ScoreRetrofit")
     fun provideRetrofit(@Named("ScoreService") okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
@@ -103,12 +75,8 @@ object ApiServiceModule {
 
     @Provides
     @Singleton
-    fun provideScoreService(@Named("SmRetrofit") retrofit: Retrofit): ScoreService =
-        retrofit.create(ScoreService::class.java)
-
-    @Provides
-    @Singleton
-    fun provideGameRepository(apiService: ScoreApiService, scoreService: ScoreService): ScoreRepository {
-        return ScoreRepositoryImpl(apiService = apiService, scoreService = scoreService)
+    fun provideRepository(scoreApiService: ScoreApiService) : ScoreRepository {
+        return ScoreRepositoryImpl(scoreApiService)
     }
+
 }

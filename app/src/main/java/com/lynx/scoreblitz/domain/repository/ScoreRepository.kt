@@ -4,7 +4,6 @@ import com.lynx.scoreblitz.domain.model.FixtureResult
 import com.lynx.scoreblitz.domain.model.H2HResponse
 import com.lynx.scoreblitz.domain.model.Leagues
 import com.lynx.scoreblitz.domain.model.StandingList
-import com.lynx.scoreblitz.domain.model.blitz_model.FixtureData
 import com.lynx.scoreblitz.utils.ApiResponse
 import kotlinx.coroutines.flow.Flow
 
@@ -33,10 +32,4 @@ interface ScoreRepository {
         apiKey: String
     ) : Flow<ApiResponse<StandingList>>
 
-    suspend fun getScores(
-        date: String,
-        include: String,
-        filter: String,
-        page: Int
-    ) : Flow<ApiResponse<List<FixtureData?>?>>
 }
