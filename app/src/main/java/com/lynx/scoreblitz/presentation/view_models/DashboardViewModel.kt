@@ -55,8 +55,7 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
 
     val key = MutableLiveData<Int?>()
 
-
-    private val fixturesMap = MutableStateFlow(mutableMapOf<Int, List<FixtureResult?>?>())
+//    private val fixturesMap = MutableStateFlow(mutableMapOf<Int, List<FixtureResult?>?>())
 
     fun getLeagues() = scope.launch(Dispatchers.IO) {
         useCase(met = "Leagues", apiKey = Constants.API_KEY).collectLatest {
@@ -123,38 +122,6 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
             }
         }
 
-//    fun getScores() = viewModelScope.launch(Dispatchers.IO) {
-//        useCase(
-//            date = SCORE.DATE.value,
-//            include = SCORE.INCLUDE.value,
-//            filter = SCORE.FILTER.value,
-//            page = 5
-//        ).collectLatest {
-//            when (it) {
-//                is ApiResponse.Loading -> {
-//                    _scores.value = scores.value.copy(
-//                        loading = true,
-//                        scores = it.data ?: emptyList()
-//                    )
-//                }
-//
-//                is ApiResponse.Success -> {
-//                    _scores.value = scores.value.copy(
-//                        loading = false,
-//                        scores = it.data ?: emptyList()
-//                    )
-//                }
-//
-//                is ApiResponse.Error -> {
-//                    _scores.value = scores.value.copy(
-//                        loading = false,
-//                        error = it.message ?: "An Expected Error Occurred!"
-//                    )
-//                }
-//            }
-//        }
-//    }
-
     fun onClear() {
         _leagues.value = LeaguesStates(false, emptyList(), "")
         _fixtures.value = FixturesStates(false, emptyList(), "")
@@ -170,13 +137,6 @@ class DashboardViewModel @Inject constructor(private val useCase: DashboardUseCa
         leagueLiveData.value = emptyList()
         fixtureLiveData.value = emptyList()
         scope.cancel()
-//        _actions.resetReplayCache()
     }
 
-}
-
-enum class SCORE(val value: String) {
-    DATE("2022-04-10"),
-    INCLUDE("league;participants;scores;season;odds"),
-    FILTER("markets:6;bookmakers:2")
 }

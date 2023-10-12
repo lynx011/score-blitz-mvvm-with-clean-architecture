@@ -12,8 +12,9 @@ import com.lynx.scoreblitz.databinding.LeagueItemsBinding
 import com.lynx.scoreblitz.domain.model.Leagues
 import com.lynx.scoreblitz.presentation.view_models.DashboardViewModel
 
-class LeaguesAdapter(private val viewModel: DashboardViewModel,
-                     private val clickOnLeague: ((Leagues) -> Unit)? = null
+class LeaguesAdapter(
+    private val viewModel: DashboardViewModel,
+    private val clickOnLeague: ((Leagues) -> Unit)? = null
 ) : RecyclerView.Adapter<LeaguesAdapter.LeaguesViewHolder>() {
 
     class LeaguesViewHolder(
@@ -24,14 +25,22 @@ class LeaguesAdapter(private val viewModel: DashboardViewModel,
             binding.league = leagues
             binding.executePendingBindings()
 
-            if (selected){
+            if (selected) {
                 binding.leagueCard.isEnabled = false
-                binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(binding.leagueCard.context,
-                    R.color.black_glass2))
-            }else{
+                binding.leagueCard.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        binding.leagueCard.context,
+                        R.color.deep_blue1
+                    )
+                )
+            } else {
                 binding.leagueCard.isEnabled = true
-                binding.leagueCard.setCardBackgroundColor(ContextCompat.getColor(binding.leagueCard.context,
-                    R.color.main_bg))
+                binding.leagueCard.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        binding.leagueCard.context,
+                        R.color.main_bg
+                    )
+                )
             }
 
         }
@@ -53,7 +62,7 @@ class LeaguesAdapter(private val viewModel: DashboardViewModel,
 
         viewModel.isSelectedLeague.value = viewModel.selectedLeaguePosition.value == position
         leagues?.let {
-            holder.bind(it,viewModel.isSelectedLeague.value!!)
+            holder.bind(it, viewModel.isSelectedLeague.value!!)
         }
 
         holder.binding.apply {
@@ -65,7 +74,6 @@ class LeaguesAdapter(private val viewModel: DashboardViewModel,
             }
         }
     }
-
 
     private val diffUtil = object : DiffUtil.ItemCallback<Leagues>() {
         override fun areItemsTheSame(oldItem: Leagues, newItem: Leagues): Boolean {

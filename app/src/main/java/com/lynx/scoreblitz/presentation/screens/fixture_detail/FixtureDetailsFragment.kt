@@ -50,7 +50,10 @@ class FixtureDetailsFragment : Fragment() {
         initViewModel()
         setupViewPager(binding.tabLayout)
         setupViewPager(binding.toolTabLayout)
-        detailViewModel.getH2H(dashboardViewModel.selectedFixture.value?.home_team_key,dashboardViewModel.selectedFixture.value?.away_team_key)
+        detailViewModel.getH2H(
+            dashboardViewModel.selectedFixture.value?.home_team_key,
+            dashboardViewModel.selectedFixture.value?.away_team_key
+        )
         detailViewModel.getStandings(dashboardViewModel.selectedFixture.value?.league_key)
         toolbarVisibility()
         binding.backKey.setOnClickListener {

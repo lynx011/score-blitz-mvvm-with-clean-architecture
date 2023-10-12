@@ -101,7 +101,7 @@
                                 android:layout_height="wrap_content"
                                 android:paddingHorizontal="16dp"
                                 android:textAlignment="center"
-                                android:textColor="@color/grey5"
+                                android:textColor="@color/grey6"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 app:eventDate="@{viewModel.selectedFixture.event_time}"
@@ -294,7 +294,7 @@
 
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/viewPager2"

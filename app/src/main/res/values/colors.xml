@@ -44,11 +44,13 @@
     <color name="dark_blue1">#0C2D48</color>
     <color name="deep_grey">#686868</color>
     <color name="grey5">#AEAEAE</color>
+    <color name="grey6">#EAEFF2</color>
     <color name="black_glass">#AA181818</color>
     <color name="white_glass">#48FFFFFF</color>
     <color name="green_1">#00D100</color>
     <color name="green_2">#00FF00</color>
     <color name="deep_blue">#050A30</color>
+    <color name="deep_blue1">#050A40</color>
     <color name="dd">#0C0D23</color>
     <color name="cc">#141728</color>
     <color name="ff">#1E1C27</color>

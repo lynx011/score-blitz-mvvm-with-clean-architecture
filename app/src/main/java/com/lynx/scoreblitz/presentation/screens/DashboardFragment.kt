@@ -2,7 +2,6 @@ package com.lynx.scoreblitz.presentation.screens
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,6 @@ import com.lynx.scoreblitz.databinding.FragmentDashboardBinding
 import com.lynx.scoreblitz.presentation.adapter.FixturesAdapter
 import com.lynx.scoreblitz.presentation.adapter.LeaguesAdapter
 import com.lynx.scoreblitz.presentation.view_models.DashboardViewModel
-import com.lynx.scoreblitz.presentation.view_models.FixtureDetailsViewModel
 import com.lynx.scoreblitz.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -25,19 +23,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
 @AndroidEntryPoint
 class DashboardFragment : Fragment() {
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
     private val viewModel: DashboardViewModel by activityViewModels()
-    private val detailsViewModel: FixtureDetailsViewModel by activityViewModels()
-    private val dashboardViewModel: DashboardViewModel by activityViewModels()
     private lateinit var leaguesAdapter: LeaguesAdapter
     private lateinit var fixturesAdapter: FixturesAdapter
 
@@ -60,37 +54,6 @@ class DashboardFragment : Fragment() {
         binding.pickDate.setOnClickListener {
             pickDateRange()
         }
-//        observeScores()
-
-        val publicKey = "a68d616900478af05d4b54596a993646"
-        val privateKey = "b8d6486a25aa7d83ff406e1d5149b36a03a57878"
-        val timestamp = getCurrentTimestamp()
-
-        val md5Hash = generateMarvelAPIHash(publicKey, privateKey, timestamp)
-        Log.d("hashAPI", md5Hash)
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    fun getCurrentTimestamp(): String {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
-        return dateFormat.format(Date())
-    }
-
-    private fun generateMarvelAPIHash(publicKey: String, privateKey: String, timestamp: String): String {
-        val input = "$timestamp$privateKey$publicKey"
-        val md = MessageDigest.getInstance("MD5")
-        val digest = md.digest(input.toByteArray())
-
-        val hexString = StringBuilder()
-        for (byte in digest) {
-            val hex = Integer.toHexString(0xFF and byte.toInt())
-            if (hex.length == 1) {
-                hexString.append('0')
-            }
-            hexString.append(hex)
-        }
-        return hexString.toString()
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -116,13 +79,14 @@ class DashboardFragment : Fragment() {
         binding.leagueRec.adapter = leaguesAdapter
 
         binding.fixtureRec.layoutManager = LinearLayoutManager(requireContext())
-        fixturesAdapter = FixturesAdapter { result,home,away ->
+        fixturesAdapter = FixturesAdapter { result, home, away ->
             viewModel.selectedFixture.value = result
             //navigate(R.id.nav_fixture_details)
             home.transitionName = "home_logo_${result.league_key}"
             away.transitionName = "away_logo_${result.league_key}"
-            val extras = FragmentNavigatorExtras(home to home.transitionName, away to away.transitionName)
-            findNavController().navigate(R.id.nav_fixture_details,null,null,extras)
+            val extras =
+                FragmentNavigatorExtras(home to home.transitionName, away to away.transitionName)
+            findNavController().navigate(R.id.nav_fixture_details, null, null, extras)
 
         }
         binding.fixtureRec.adapter = fixturesAdapter
@@ -219,7 +183,7 @@ class DashboardFragment : Fragment() {
     private fun observeLeaguesAndFixtures() {
         viewModel.leagueLiveData.observe(viewLifecycleOwner) { leagues ->
             if (viewModel.fixtureLiveData.value == null) {
-                (viewModel.selectedLeagueKey.value ?:leagues?.get(0)?.league_key)?.let {
+                (viewModel.selectedLeagueKey.value ?: leagues?.get(0)?.league_key)?.let {
                     viewModel.getFixtures(
                         it,
                         viewModel.startDate.value ?: "2022-01-10",
@@ -272,9 +236,14 @@ class DashboardFragment : Fragment() {
 
     private fun swipeToRefresh() {
         binding.refreshLayout.setOnRefreshListener {
-            observeLeaguesAndFixtures()
-            observeLeagues()
-            observeFixtures()
+            viewModel.getLeagues()
+            viewModel.getFixtures(
+                viewModel.selectedLeagueKey.value
+                    ?: viewModel.leagueLiveData.value?.get(0)?.league_key
+                    ?: 152,
+                viewModel.startDate.value ?: "2022-01-10",
+                viewModel.endDate.value ?: "2023-05-10"
+            )
             binding.refreshLayout.isRefreshing = false
         }
     }

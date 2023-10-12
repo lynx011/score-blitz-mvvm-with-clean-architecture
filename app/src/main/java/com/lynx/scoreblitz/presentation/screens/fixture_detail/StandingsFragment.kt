@@ -29,7 +29,7 @@ class StandingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentStandingsBinding.inflate(inflater,container,false)
+        _binding = FragmentStandingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -41,19 +41,21 @@ class StandingsFragment : Fragment() {
 
     private fun setupRec() {
         binding.standingRec.apply {
-            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             standingsAdapter = StandingsAdapter(dashboardViewModel)
             adapter = standingsAdapter
         }
     }
 
-    private fun observeStandings(){
+    private fun observeStandings() {
         coroutineScope.launch {
             detailViewModel.standings.collectLatest {
-                when{
+                when {
                     it.loading -> {
 
                     }
+
                     !it.standings?.total.isNullOrEmpty() -> {
                         binding.standingsCard.visibility = View.VISIBLE
                         binding.standingRec.visibility = View.VISIBLE
@@ -63,6 +65,7 @@ class StandingsFragment : Fragment() {
                             standingsAdapter.differ.submitList(it.standings.total)
                         } else binding.notFoundH2H.visibility = View.VISIBLE
                     }
+
                     it.standings?.total.isNullOrEmpty() -> {
                         binding.standingsCard.visibility = View.GONE
                         binding.standingRec.visibility = View.GONE
