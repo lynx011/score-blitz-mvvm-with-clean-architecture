@@ -53,7 +53,10 @@ class StandingsFragment : Fragment() {
             detailViewModel.standings.collectLatest {
                 when {
                     it.loading -> {
-
+                        binding.apply {
+                            leagueTypeColumn.visibility = View.GONE
+                            standingHead.visibility = View.GONE
+                        }
                     }
 
                     !it.standings?.total.isNullOrEmpty() -> {
@@ -64,11 +67,17 @@ class StandingsFragment : Fragment() {
                             binding.notFoundH2H.visibility = View.GONE
                             standingsAdapter.differ.submitList(it.standings.total)
                         } else binding.notFoundH2H.visibility = View.VISIBLE
+                        binding.standingHead.visibility = View.VISIBLE
+                        binding.leagueTypeColumn.visibility = View.VISIBLE
                     }
 
                     it.standings?.total.isNullOrEmpty() -> {
-                        binding.standingsCard.visibility = View.GONE
-                        binding.standingRec.visibility = View.GONE
+                        binding.apply {
+                            standingsCard.visibility = View.GONE
+                            standingRec.visibility = View.GONE
+                            standingHead.visibility = View.GONE
+                            leagueTypeColumn.visibility = View.GONE
+                        }
                     }
                 }
             }

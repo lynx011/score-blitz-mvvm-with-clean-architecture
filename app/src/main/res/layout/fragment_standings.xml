@@ -32,6 +32,7 @@
                     android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/standingHead"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:background="@color/black_glass2">
@@ -136,6 +137,7 @@
                 app:lottie_rawRes="@raw/not_found_tag" />
         </FrameLayout>
         <LinearLayout
+            android:id="@+id/leagueTypeColumn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
